@@ -1,0 +1,12 @@
+{
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "libVersion": "latest",
+  "miniprogramRoot": "./",
+  "projectname": "today-no-milktea-api-template",
+  "setting": {
+    "es6": true,
+    "minified": true,
+    "postcss": true
+  }
+}

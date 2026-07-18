@@ -1,0 +1,149 @@
+.page {
+  min-height: 100vh;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.hero {
+  padding: 28rpx 4rpx 24rpx;
+}
+
+.eyebrow {
+  color: #9b5f7f;
+  font-size: 24rpx;
+  letter-spacing: 0;
+  margin-bottom: 10rpx;
+}
+
+.title {
+  color: #2d1725;
+  font-size: 46rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.subtitle {
+  color: #76566a;
+  font-size: 26rpx;
+  line-height: 1.55;
+  margin-top: 16rpx;
+}
+
+.panel,
+.result {
+  background: rgba(255, 255, 255, 0.84);
+  border: 2rpx solid rgba(255, 185, 218, 0.9);
+  border-radius: 28rpx;
+  box-shadow: 0 18rpx 50rpx rgba(184, 87, 132, 0.12);
+  padding: 28rpx;
+}
+
+.result {
+  margin-top: 26rpx;
+}
+
+.field-label {
+  color: #5d3b4d;
+  font-size: 25rpx;
+  font-weight: 700;
+  margin: 24rpx 0 12rpx;
+}
+
+.field-label:first-child {
+  margin-top: 0;
+}
+
+.input {
+  background: #fff;
+  border: 2rpx solid #f5c0da;
+  border-radius: 18rpx;
+  box-sizing: border-box;
+  color: #2d1725;
+  font-size: 28rpx;
+  height: 86rpx;
+  padding: 0 24rpx;
+}
+
+.option-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.chip {
+  background: #fff;
+  border: 2rpx solid #f2bed7;
+  border-radius: 999rpx;
+  color: #6f4b5e;
+  font-size: 25rpx;
+  line-height: 1;
+  min-height: 64rpx;
+  padding: 18rpx 24rpx;
+}
+
+.chip.active {
+  background: #2d1725;
+  border-color: #2d1725;
+  color: #fff;
+}
+
+.submit {
+  background: #ff6fab;
+  border-radius: 999rpx;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 800;
+  height: 92rpx;
+  line-height: 92rpx;
+  margin-top: 32rpx;
+}
+
+.submit[disabled] {
+  opacity: 0.72;
+}
+
+.result-title {
+  color: #2d1725;
+  font-size: 32rpx;
+  font-weight: 800;
+  margin-bottom: 20rpx;
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14rpx;
+}
+
+.metric {
+  background: #fff7fb;
+  border-radius: 20rpx;
+  padding: 22rpx 10rpx;
+  text-align: center;
+}
+
+.metric-value {
+  color: #2d1725;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.metric-label,
+.source,
+.explain {
+  color: #76566a;
+  font-size: 24rpx;
+}
+
+.metric-label {
+  margin-top: 8rpx;
+}
+
+.source {
+  margin-top: 22rpx;
+}
+
+.explain {
+  line-height: 1.55;
+  margin-top: 12rpx;
+}

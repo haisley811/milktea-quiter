@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/record/record"
+  ],
+  "window": {
+    "navigationBarTitleText": "今天不喝",
+    "navigationBarBackgroundColor": "#fff7fb",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff7fb"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

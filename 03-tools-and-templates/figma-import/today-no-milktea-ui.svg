@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1290" height="900" viewBox="0 0 1290 900">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F8F4FF"/><stop offset="1" stop-color="#FFF7FB"/></linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8EDDD3"/><stop offset="1" stop-color="#A7F1E6"/></linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F8BBD9"/><stop offset="1" stop-color="#FFD4B8"/></linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#DDF8F5"/><stop offset="1" stop-color="#F3E8FF"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#4C3575" flood-opacity=".13"/></filter>
+  </defs>
+
+  <g id="Cover" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif">
+    <rect width="1290" height="900" fill="#F8F4FF"/>
+    <text x="48" y="62" fill="#4C3575" font-size="28" font-weight="700">今天不喝 · Figma 可编辑 UI</text>
+    <text x="48" y="94" fill="#8A74AA" font-size="16">首页 · 虚拟下单 · 下单成功金币反馈</text>
+    <rect x="48" y="122" width="1194" height="1" fill="#E7D8FF"/>
+  </g>
+
+  <g id="Screen-Home" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="48" y="150" width="360" height="700" rx="36" fill="url(#pageBg)" filter="url(#shadow)"/>
+    <text x="74" y="192" fill="#8A74AA" font-size="13" font-weight="700">和奶茶说拜拜的第 7 天</text>
+    <text x="74" y="233" fill="#4C3575" font-size="31" font-weight="800">今天不喝</text>
+    <rect x="299" y="204" width="84" height="28" rx="14" fill="#FFFFFF" fill-opacity=".78"/>
+    <text x="312" y="223" fill="#6D5A8C" font-size="11" font-weight="700">轻盈度 50%</text>
+
+    <g id="Character">
+      <rect x="74" y="256" width="308" height="184" rx="26" fill="url(#hero)"/>
+      <circle cx="228" cy="305" r="30" fill="#FFE5D8"/>
+      <path d="M199 296 C202 264 254 262 258 301 L250 312 L205 312Z" fill="#4C3575"/>
+      <circle cx="217" cy="306" r="2.5" fill="#4C3575"/><circle cx="239" cy="306" r="2.5" fill="#4C3575"/>
+      <path d="M221 319 Q228 324 235 319" fill="none" stroke="#D68088" stroke-width="2" stroke-linecap="round"/>
+      <path d="M204 338 Q228 325 252 338 L260 399 L196 399Z" fill="#BBA7EF" stroke="#7C5BD6" stroke-width="2"/>
+      <path d="M196 355 L176 388" fill="none" stroke="#FFE5D8" stroke-width="13" stroke-linecap="round"/>
+      <path d="M260 355 L280 388" fill="none" stroke="#FFE5D8" stroke-width="13" stroke-linecap="round"/>
+      <rect x="183" y="404" width="18" height="10" rx="5" fill="#4C3575"/><rect x="255" y="404" width="18" height="10" rx="5" fill="#4C3575"/>
+      <rect x="91" y="274" width="91" height="34" rx="17" fill="#FFFFFF" fill-opacity=".86"/>
+      <text x="105" y="296" fill="#6D5A8C" font-size="12" font-weight="700">继续加油呀</text>
+      <text x="91" y="423" fill="#6D5A8C" font-size="12" font-weight="700">Body Score 50 · 稳稳向前</text>
+    </g>
+
+    <g id="Stat-Cards">
+      <rect x="74" y="456" width="147" height="82" rx="20" fill="#FFFFFF" fill-opacity=".82" stroke="#E7D8FF"/>
+      <text x="88" y="479" fill="#9886B5" font-size="11" font-weight="700">累计省钱</text><text x="88" y="510" fill="#4C3575" font-size="23" font-weight="800">¥128</text>
+      <rect x="235" y="456" width="147" height="82" rx="20" fill="#FFFFFF" fill-opacity=".82" stroke="#E7D8FF"/>
+      <text x="249" y="479" fill="#9886B5" font-size="11" font-weight="700">累计减少热量</text><text x="249" y="510" fill="#4C3575" font-size="23" font-weight="800">1,820</text>
+    </g>
+
+    <g id="Daily-Card">
+      <rect x="74" y="554" width="308" height="181" rx="26" fill="#FFFFFF" fill-opacity=".82" stroke="#E7D8FF"/>
+      <rect x="88" y="568" width="280" height="55" rx="18" fill="url(#hero)"/>
+      <text x="103" y="591" fill="#4C3575" font-size="13" font-weight="800">今日还没记录</text>
+      <text x="103" y="610" fill="#7D679D" font-size="11">选一个按钮开始，记录会保存在本地。</text>
+      <rect x="88" y="640" width="134" height="78" rx="22" fill="url(#mint)"/>
+      <text x="103" y="665" fill="#226962" font-size="11" font-weight="700">虚拟下单</text><text x="103" y="695" fill="#226962" font-size="19" font-weight="800">今天戒了</text>
+      <rect x="234" y="640" width="134" height="78" rx="22" fill="url(#pink)"/>
+      <text x="249" y="665" fill="#7F3B67" font-size="11" font-weight="700">温柔记录</text><text x="249" y="695" fill="#7F3B67" font-size="19" font-weight="800">今天喝了</text>
+    </g>
+    <g id="Bottom-Nav"><rect x="74" y="758" width="308" height="64" rx="22" fill="#FFFFFF" fill-opacity=".86"/>
+      <text x="97" y="795" fill="#7C5BD6" font-size="12" font-weight="800">首页</text><text x="170" y="795" fill="#9886B5" font-size="12">记录</text><text x="245" y="795" fill="#9886B5" font-size="12">数据</text><text x="319" y="795" fill="#9886B5" font-size="12">我的</text>
+    </g>
+  </g>
+
+  <g id="Screen-Order" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="465" y="150" width="360" height="700" rx="36" fill="url(#pageBg)" filter="url(#shadow)"/>
+    <text x="491" y="192" fill="#8A74AA" font-size="13" font-weight="700">每一次选择，都离目标更近一点</text>
+    <text x="491" y="229" fill="#4C3575" font-size="28" font-weight="800">记录一杯</text>
+    <rect x="491" y="252" width="151" height="69" rx="21" fill="#DDF8F5" stroke="#8EDDD3" stroke-width="2"/>
+    <text x="506" y="277" fill="#226962" font-size="15" font-weight="800">今天戒了</text><text x="506" y="299" fill="#397C75" font-size="11">虚拟下单，不真的喝</text>
+    <rect x="658" y="252" width="141" height="69" rx="21" fill="#FFFFFF" fill-opacity=".7" stroke="#E7D8FF"/>
+    <text x="673" y="277" fill="#7F3B67" font-size="15" font-weight="800">今天喝了</text><text x="673" y="299" fill="#9886B5" font-size="11">真实记录，温柔看见</text>
+    <rect x="491" y="337" width="308" height="372" rx="28" fill="#FFFFFF" fill-opacity=".84" stroke="#E7D8FF"/>
+    <text x="511" y="369" fill="#9886B5" font-size="11" font-weight="800">DRINK DETAILS</text><text x="511" y="393" fill="#4C3575" font-size="18" font-weight="800">饮品信息</text>
+    <rect x="711" y="365" width="68" height="24" rx="12" fill="#F3E8FF"/><text x="725" y="381" fill="#6D5A8C" font-size="10" font-weight="700">未下单</text>
+    <text x="511" y="429" fill="#4C3575" font-size="13" font-weight="800">饮品类型</text><text x="511" y="448" fill="#9886B5" font-size="10">会影响默认价格、热量和糖分</text>
+    <rect x="511" y="461" width="51" height="32" rx="16" fill="#F3E8FF"/><text x="524" y="482" fill="#4C3575" font-size="11" font-weight="700">奶茶</text>
+    <rect x="570" y="461" width="55" height="32" rx="16" fill="#FFFFFF" stroke="#E7D8FF"/><text x="582" y="482" fill="#6D5A8C" font-size="11">果茶</text>
+    <rect x="633" y="461" width="65" height="32" rx="16" fill="#FFFFFF" stroke="#E7D8FF"/><text x="645" y="482" fill="#6D5A8C" font-size="11">咖啡</text>
+    <text x="511" y="534" fill="#4C3575" font-size="13" font-weight="800">饮品名称</text><text x="511" y="553" fill="#9886B5" font-size="10">可选填，AI 会更准确估算</text>
+    <rect x="511" y="565" width="268" height="42" rx="17" fill="#FFFFFF" stroke="#E7D8FF"/><text x="526" y="591" fill="#B5A5CA" font-size="12">例如：喜茶多肉葡萄</text>
+    <rect x="511" y="625" width="268" height="66" rx="18" fill="#FAF7FF" stroke="#E7D8FF"/>
+    <text x="526" y="649" fill="#4C3575" font-size="12" font-weight="800">实时估算</text><text x="526" y="674" fill="#6D5A8C" font-size="11">¥18.5　·　340 kcal　·　30g 糖</text>
+    <rect x="491" y="727" width="308" height="56" rx="22" fill="#8EDDD3"/>
+    <text x="603" y="762" fill="#226962" font-size="16" font-weight="800">确认不下单</text>
+    <g id="Bottom-Nav-Order"><rect x="491" y="797" width="308" height="28" rx="14" fill="#FFFFFF" fill-opacity=".8"/><text x="514" y="816" fill="#9886B5" font-size="10">首页</text><text x="587" y="816" fill="#7C5BD6" font-size="10" font-weight="800">记录</text><text x="660" y="816" fill="#9886B5" font-size="10">数据</text><text x="733" y="816" fill="#9886B5" font-size="10">我的</text></g>
+  </g>
+
+  <g id="Screen-Success" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="882" y="150" width="360" height="700" rx="36" fill="#F8F4FF" filter="url(#shadow)"/>
+    <rect x="882" y="150" width="360" height="700" rx="36" fill="#4C3575" fill-opacity=".18"/>
+    <rect x="904" y="413" width="316" height="382" rx="30" fill="#FFFFFF"/>
+    <rect x="922" y="431" width="280" height="166" rx="24" fill="url(#hero)"/>
+    <text x="942" y="461" fill="#8670A7" font-size="12" font-weight="700">轻盈反馈</text>
+    <text x="942" y="502" fill="#4C3575" font-size="29" font-weight="800">下单成功</text>
+    <text x="942" y="529" fill="#6D5A8C" font-size="12" font-weight="700">今天你把一杯饮品变成了正向反馈。</text>
+    <rect x="942" y="548" width="158" height="32" rx="16" fill="#FFF6CF" stroke="#F2CB62"/>
+    <circle cx="960" cy="564" r="10" fill="#F4C54F"/><text x="956" y="568" fill="#FFFFFF" font-size="13" font-weight="800">+</text>
+    <text x="977" y="569" fill="#9A6512" font-size="12" font-weight="800">下单成功，加 10 金币</text>
+    <g id="Result-Stats">
+      <rect x="922" y="615" width="132" height="65" rx="18" fill="#FFFFFF" stroke="#E7D8FF"/><text x="936" y="639" fill="#9886B5" font-size="10">今天省下</text><text x="936" y="665" fill="#4C3575" font-size="19" font-weight="800">¥18.5</text>
+      <rect x="1070" y="615" width="132" height="65" rx="18" fill="#FFFFFF" stroke="#E7D8FF"/><text x="1084" y="639" fill="#9886B5" font-size="10">少摄入</text><text x="1084" y="665" fill="#4C3575" font-size="19" font-weight="800">340 kcal</text>
+    </g>
+    <rect x="922" y="696" width="280" height="40" rx="16" fill="#FAF7FF" stroke="#E7D8FF"/><text x="940" y="721" fill="#6D5A8C" font-size="11" font-weight="700">Body Score -2 · 数据为估算值，仅供参考。</text>
+    <rect x="922" y="752" width="132" height="32" rx="16" fill="#FFFFFF" stroke="#E7D8FF"/><text x="960" y="773" fill="#4C3575" font-size="12" font-weight="800">返回首页</text>
+    <rect x="1070" y="752" width="132" height="32" rx="16" fill="#A78BFA"/><text x="1106" y="773" fill="#FFFFFF" font-size="12" font-weight="800">查看数据</text>
+  </g>
+</svg>

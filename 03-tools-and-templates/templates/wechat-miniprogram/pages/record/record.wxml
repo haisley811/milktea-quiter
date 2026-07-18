@@ -1,0 +1,64 @@
+<view class="page">
+  <view class="hero">
+    <view class="eyebrow">Today No Milktea</view>
+    <view class="title">今天喝了什么？</view>
+    <view class="subtitle">这个页面会请求你部署在 Netlify 的 /api/estimate-drink，不会在小程序里保存 QWEN API Key。</view>
+  </view>
+
+  <view class="panel">
+    <view class="field-label">饮品名称</view>
+    <input class="input" placeholder="例如：珍珠奶茶" value="{{form.drinkName}}" bindinput="onDrinkNameInput" />
+
+    <view class="field-label">饮品类型</view>
+    <view class="option-grid">
+      <button wx:for="{{drinkTypes}}" wx:key="*this" class="chip {{form.drinkType === item ? 'active' : ''}}" data-value="{{item}}" bindtap="chooseDrinkType">{{item}}</button>
+    </view>
+
+    <view class="field-label">杯型</view>
+    <view class="option-grid">
+      <button wx:for="{{sizes}}" wx:key="*this" class="chip {{form.size === item ? 'active' : ''}}" data-value="{{item}}" bindtap="chooseSize">{{item}}</button>
+    </view>
+
+    <view class="field-label">冰量</view>
+    <view class="option-grid">
+      <button wx:for="{{iceOptions}}" wx:key="*this" class="chip {{form.ice === item ? 'active' : ''}}" data-value="{{item}}" bindtap="chooseIce">{{item}}</button>
+    </view>
+
+    <view class="field-label">糖量</view>
+    <view class="option-grid">
+      <button wx:for="{{sugarOptions}}" wx:key="*this" class="chip {{form.sugar === item ? 'active' : ''}}" data-value="{{item}}" bindtap="chooseSugar">{{item}}</button>
+    </view>
+
+    <view class="field-label">小料</view>
+    <view class="option-grid">
+      <button wx:for="{{toppingOptions}}" wx:key="name" class="chip {{item.selected ? 'active' : ''}}" data-value="{{item.name}}" bindtap="toggleTopping">{{item.name}}</button>
+    </view>
+
+    <view class="field-label">自定义小料</view>
+    <input class="input" placeholder="例如：芋圆、奶盖" value="{{form.customTopping}}" bindinput="onCustomToppingInput" />
+
+    <button class="submit" loading="{{isEstimating}}" disabled="{{isEstimating}}" bindtap="submitEstimate">
+      {{isEstimating ? 'AI 估算中' : '估算价格、热量、糖分'}}
+    </button>
+  </view>
+
+  <view wx:if="{{estimate}}" class="result">
+    <view class="result-title">估算结果</view>
+    <view class="metric-row">
+      <view class="metric">
+        <view class="metric-value">¥{{estimate.price}}</view>
+        <view class="metric-label">价格</view>
+      </view>
+      <view class="metric">
+        <view class="metric-value">{{estimate.calories}}</view>
+        <view class="metric-label">千卡</view>
+      </view>
+      <view class="metric">
+        <view class="metric-value">{{estimate.sugarGram}}g</view>
+        <view class="metric-label">糖分</view>
+      </view>
+    </view>
+    <view class="source">来源：{{estimate.source}} · 可信度：{{estimate.confidence}}</view>
+    <view class="explain">{{estimate.explanation}}</view>
+  </view>
+</view>
