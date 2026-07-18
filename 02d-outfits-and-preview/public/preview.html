@@ -1,0 +1,548 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>今天不喝 - 本地预览</title>
+    <style>
+      :root {
+        --text: #4c3575;
+        --muted: #8a74aa;
+        --line: #e7d8ff;
+        --purple: #a78bfa;
+        --mint: #8eddd3;
+        --pink: #f8bbd9;
+        --honey: #ffbf8a;
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(221, 248, 245, .9), transparent 24rem),
+          radial-gradient(circle at 88% 4%, rgba(248, 187, 217, .45), transparent 24rem),
+          linear-gradient(180deg, #f8f4ff, #fff7fb);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      button, input { font: inherit; }
+      button {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+      }
+      button::after {
+        content: "";
+        position: absolute;
+        left: var(--tap-x, 50%);
+        top: var(--tap-y, 50%);
+        width: 0;
+        height: 0;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(255,255,255,.62) 0%, rgba(255,255,255,0) 68%);
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+      button.tap-burst::after { animation: tap-burst 420ms ease-out both; }
+      button:disabled { cursor: not-allowed; opacity: .72; transform: none !important; }
+      button[aria-busy="true"] { cursor: progress; }
+      button.submit-busy::before { content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.34) 42%,transparent 72%); opacity:.78; pointer-events:none; transform:translateX(-120%); animation:submit-sheen 1.15s ease-in-out infinite; }
+      h1, h2, p { margin: 0; letter-spacing: 0; }
+      h1 { font-size: 38px; line-height: 1.05; }
+      h2 { font-size: 26px; line-height: 1.14; }
+      input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: rgba(255,255,255,.82);
+        color: var(--text);
+        padding: 13px 16px;
+        font-size: 14px;
+        font-weight: 760;
+        outline: none;
+        transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      }
+      input:focus { border-color: var(--purple); background: #fff; box-shadow: 0 0 0 4px rgba(167,139,250,.18); }
+      .phone {
+        width: min(100% - 24px, 430px);
+        max-width: calc(100vw - 24px);
+        min-height: calc(100vh - 32px);
+        margin: 16px auto;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.84);
+        border-radius: 38px;
+        background: rgba(248,244,255,.72);
+        box-shadow: 0 24px 80px rgba(76,53,117,.16);
+        backdrop-filter: blur(18px);
+      }
+      .status { display:flex; justify-content:space-between; padding:16px 24px 0; color:#806a9f; font-size:12px; font-weight:850; }
+      main { min-width:0; padding: 18px 20px calc(7rem + var(--safe-bottom)); }
+      .view { display: none; animation: screen-enter 240ms ease both; }
+      .view.active { display: grid; }
+      .view, .glass, .character, .today-panel { min-width:0; max-width:100%; }
+      .stack { gap: 18px; }
+      .glass.stack { display: grid; }
+      .eyebrow { color: var(--muted); font-size: 13px; font-weight: 850; }
+      .hint { color: #8f7aac; font-size: 12px; font-weight: 760; line-height: 1.45; }
+      .glass {
+        border: 1px solid rgba(255,255,255,.84);
+        border-radius: 30px;
+        background: rgba(255,255,255,.7);
+        box-shadow: 0 14px 34px rgba(111,82,153,.12);
+        backdrop-filter: blur(14px);
+      }
+      .character {
+        position: relative;
+        min-height: 310px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.84);
+        border-radius: 32px;
+        background:
+          radial-gradient(circle at 18% 14%, rgba(142,221,211,.35), transparent 9rem),
+          radial-gradient(circle at 84% 74%, rgba(248,187,217,.28), transparent 10rem),
+          linear-gradient(135deg, #ddf8f5, #fff 44%, #f3e8ff);
+        box-shadow: 0 18px 44px rgba(76,53,117,.14);
+      }
+      .character.compact { min-height: 190px; }
+      .character .badge, .bubble {
+        position: absolute;
+        z-index: 10;
+        border: 1px solid rgba(255,255,255,.84);
+        background: rgba(255,255,255,.76);
+        color: #6d5a8c;
+        font-size: 12px;
+        font-weight: 900;
+        backdrop-filter: blur(10px);
+      }
+      .character .badge { left: 16px; top: 16px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: 999px; padding: 8px 11px; }
+      .bubble { right: 18px; bottom: 18px; max-width: 176px; border-radius: 22px; padding: 12px; line-height: 1.35; }
+      .character img { position:absolute; inset:auto 0 0; width:100%; height:94%; object-fit:contain; object-position:center bottom; animation: floaty 4.5s ease-in-out infinite; }
+      .character.compact img { height: 100%; }
+      .stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .stat { min-width:0; border-radius:24px; padding:14px; background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.84); }
+      .stat strong { display:block; color:var(--text); font-size:20px; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .today-panel { border-radius:24px; padding:14px; background:linear-gradient(90deg,#ddf8f5,#f3e8ff); }
+      .today-panel.consumed { background:linear-gradient(90deg,#fff0f7,#fff4dd); }
+      .today-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+      .today-badge, .pill, .estimate-chip {
+        flex-shrink: 0;
+        border-radius: 999px;
+        background: rgba(255,255,255,.78);
+        color: #6d5a8c;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 950;
+      }
+      .actions, .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .primary, .secondary, .danger, .mode, .delete-btn, .estimate-reset {
+        border: 0;
+        border-radius: 24px;
+        padding: 14px 16px;
+        text-align: left;
+        color: var(--text);
+        font-weight: 950;
+        transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      }
+      .primary { color:#fff; background:linear-gradient(90deg,#8eddd3,#a78bfa); box-shadow:0 16px 36px rgba(167,139,250,.24); }
+      .secondary { background:linear-gradient(90deg,#fff0f7,#fff4dd); color:#7f3b67; }
+      .danger { width:100%; color:#8d4970; border:1px solid #ffd1dd; background:#fff0f7; text-align:center; }
+      .mode { border:1px solid var(--line); background:rgba(255,255,255,.7); }
+      .mode.selected, .pill.selected { animation:selected-pop 260ms ease both; }
+      .mode.selected { border-color:var(--mint); background:#ddf8f5; box-shadow:0 14px 28px rgba(142,221,211,.2); }
+      button:hover { transform: translateY(-2px); }
+      button:active { transform: scale(.96); }
+      .field {
+        display:grid;
+        gap:8px;
+        border:1px solid transparent;
+        border-radius:22px;
+        padding:4px;
+        transition:background .2s ease, border-color .2s ease;
+      }
+      .field:hover { border-color:rgba(255,255,255,.72); background:rgba(255,255,255,.45); }
+      .field:focus-within { border-color:rgba(167,139,250,.42); background:rgba(255,255,255,.6); }
+      .label { display:flex; align-items:center; gap:8px; color:var(--text); font-size:14px; font-weight:950; }
+      .label::before { content:""; width:7px; height:7px; border-radius:999px; background:var(--purple); box-shadow:0 0 0 4px rgba(167,139,250,.14); }
+      .pills { display:flex; flex-wrap:wrap; gap:8px; }
+      .pill { border:1px solid var(--line); background:rgba(255,255,255,.72); }
+      .pill.selected { border-color:var(--purple); background:#f3e8ff; }
+      .estimate-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+      .estimate-meta { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+      .estimate-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+      .estimate-grid > span, .estimate-field {
+        min-width:0;
+        border-radius:18px;
+        border:1px solid transparent;
+        background:rgba(255,255,255,.7);
+        padding:10px;
+      }
+      .estimate-field.edited { border-color:rgba(167,139,250,.45); background:linear-gradient(135deg,#f3e8ff,#fff); }
+      .estimate-field small { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#9886b5; font-size:11px; font-weight:950; }
+      .edited-tag { border-radius:999px; background:rgba(167,139,250,.15); color:#7c5bd6; padding:2px 7px; font-size:10px; font-weight:950; }
+      .estimate-input-wrap { display:flex; align-items:center; gap:5px; margin-top:5px; color:var(--text); font-size:12px; font-weight:950; }
+      .estimate-input-wrap input { min-width:0; padding:9px 8px; border-radius:14px; text-align:center; font-weight:950; }
+      .estimate-reset { padding:7px 10px; border:1px solid var(--line); background:#fff; font-size:12px; }
+      .estimate-impact, .estimate-status, .manual-status {
+        margin-top: 10px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.72);
+        padding: 10px 12px;
+        color: #6d5a8c;
+        font-size: 12px;
+        font-weight: 950;
+        text-align: center;
+      }
+      .estimate-status.connected { color:#3f8f86; }
+      .estimate-status.local { color:#a6753f; }
+      .estimate-status.checking { color:#8a74aa; }
+      .status-dot { display:inline-block; width:8px; height:8px; border-radius:999px; margin-right:7px; vertical-align:middle; background:#c4b5fd; box-shadow:0 0 0 4px rgba(196,181,253,.18); }
+      .estimate-status.connected .status-dot { background:#8eddd3; box-shadow:0 0 0 4px rgba(142,221,211,.22); }
+      .estimate-status.local .status-dot { background:#ffbf8a; box-shadow:0 0 0 4px rgba(255,191,138,.24); }
+      .status-pulse { animation:status-pulse 1.05s ease-in-out infinite; }
+      .hidden { display:none !important; }
+      .scorebar { height:12px; overflow:hidden; border-radius:999px; background:#f3e8ff; margin-top:12px; }
+      .scorebar span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#8eddd3,#a78bfa,#f8bbd9); }
+      .trend { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; align-items:end; }
+      .trend-day { display:grid; justify-items:center; gap:7px; border-radius:18px; padding:8px 4px; transition:background .2s ease; }
+      .trend-day:hover { background:rgba(255,255,255,.55); }
+      .trend-bars { height:92px; display:flex; align-items:end; gap:4px; }
+      .bar { width:11px; min-height:14px; border-radius:999px; }
+      .bar.saved { background:linear-gradient(180deg,#ddf8f5,#8eddd3); }
+      .bar.consumed { background:linear-gradient(180deg,#fff0f7,#f8bbd9); }
+      .stage-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:12px; }
+      .stage-dot { min-height:46px; border-radius:18px; background:rgba(255,255,255,.65); border:1px solid rgba(255,255,255,.84); display:grid; place-items:center; font-size:12px; font-weight:950; color:#8a74aa; }
+      .stage-dot.active { color:#4c3575; background:#ddf8f5; border-color:#8eddd3; }
+      .history { display:grid; gap:12px; margin-top:12px; }
+      .history-empty, .record, .history-group { border-radius:22px; background:rgba(255,255,255,.68); padding:14px; }
+      .history-heading, .record-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+      .delete-btn { padding:7px 10px; border:1px solid #ffd1dd; background:#fff0f7; color:#8d4970; font-size:12px; }
+      .account-card { display:flex; gap:14px; align-items:center; padding:18px; }
+      .avatar { width:64px; height:64px; flex-shrink:0; display:grid; place-items:center; border-radius:24px; background:linear-gradient(135deg,#f3e8ff,#ddf8f5); color:#7c5bd6; font-size:24px; font-weight:950; }
+      .theme-controls { display:grid; gap:12px; }
+      .theme-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+      .theme-option { min-height:82px; border:1px solid var(--line); border-radius:22px; background:rgba(255,255,255,.72); padding:12px; text-align:left; color:var(--text); }
+      .theme-option.selected { border-color:var(--purple); background:#f3e8ff; animation:selected-pop 260ms ease both; }
+      .theme-option strong { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; }
+      .theme-option small { display:block; margin-top:5px; color:var(--muted); font-weight:760; line-height:1.35; }
+      .theme-swatch { width:36px; height:18px; flex-shrink:0; border:1px solid var(--line); border-radius:999px; box-shadow:inset 0 1px 0 rgba(255,255,255,.5); }
+      .theme-swatch.soft { background:linear-gradient(135deg,#8eddd3,#a78bfa,#f8bbd9); }
+      .theme-swatch.mono { background:linear-gradient(135deg,#111 0 48%,#fff 48%); }
+      .theme-swatch.liquid { background:linear-gradient(135deg,rgba(34,211,238,.8),rgba(196,181,253,.9)); }
+      .theme-swatch.y2k { background:linear-gradient(135deg,#ff2fb3,#00d5ff 58%,#fff176); }
+      .theme-swatch.neo { background:linear-gradient(135deg,#ff4d4d 0 33%,#ffd447 33% 66%,#3ecf8e 66%); }
+      .theme-swatch.cyber { background:linear-gradient(135deg,#05070b,#39ff14 52%,#00e5ff); }
+      .theme-toggle { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; border:1px solid var(--line); border-radius:22px; background:rgba(255,255,255,.72); padding:13px; color:var(--text); text-align:left; }
+      .switch { position:relative; width:52px; height:30px; flex-shrink:0; border:1px solid var(--line); border-radius:999px; background:#f5f0fa; }
+      .switch::after { content:""; position:absolute; left:4px; top:4px; width:20px; height:20px; border-radius:999px; background:#fff; box-shadow:0 4px 12px rgba(76,53,117,.18); transition:transform .2s ease; }
+      .theme-toggle[aria-pressed="true"] .switch { background:#ddf8f5; border-color:#8eddd3; }
+      .theme-toggle[aria-pressed="true"] .switch::after { transform:translateX(22px); }
+      .coin-badge{flex-shrink:0;border:1px solid #fde68a;border-radius:16px;background:#fffbeb;padding:8px 10px;color:#92400e;font-weight:950;font-size:13px}
+      .wardrobe-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.wardrobe-item{border:1px solid rgba(255,255,255,.85);border-radius:18px;background:rgba(255,255,255,.6);padding:9px;box-shadow:0 8px 20px rgba(76,53,117,.08)}.wardrobe-item.equipped{border-color:#a78bfa;box-shadow:0 0 0 2px #e9d5ff}.wardrobe-item strong{display:block;margin-top:7px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wardrobe-item button{width:100%;margin-top:7px;border:0;border-radius:12px;padding:8px 5px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:950}.wardrobe-item button:disabled{opacity:.45}.wardrobe-item button.primary{background:#4c3575;color:#fff}.wardrobe-item button.owned{background:#ede9fe;color:#6d28d9}.outfit-swatch{position:relative;height:58px;overflow:hidden;border-radius:13px;border:1px solid rgba(255,255,255,.8)}.outfit-swatch img{display:block;width:100%;height:100%;object-fit:contain}.mini-outfit{position:absolute;left:50%;top:8px;width:28px;height:25px;transform:translateX(-50%);border:2px solid rgba(76,53,117,.5);border-radius:10px 10px 5px 5px;background:#c4b5fd}.mini-outfit::after{content:"";position:absolute;left:1px;right:1px;top:20px;height:25px;border:inherit;border-radius:4px 4px 12px 12px;background:inherit}.mini-outfit.hanfu-cloud{background:#a7f3d0}.mini-outfit.denim-street{background:#93c5fd}.mini-outfit.ballet-pink{background:#f9a8d4}.mini-outfit.coquette-red{background:#fb7185}.mini-outfit.techwear-black{background:#374151}.mini-outfit.summer-sundress{background:#fde68a}.mini-outfit.office-chic{background:#e5e7eb}.mini-outfit.idol-silver{background:#c4b5fd}.mini-outfit.winter-coat{background:#93c5fd}
+      .character-outfit{--outfit:#c4b5fd;--outfit-dark:#8b5cf6;position:absolute;left:50%;top:56%;z-index:5;width:29%;height:32%;transform:translateX(-50%) scaleX(var(--body-scale,1));transform-origin:center top;pointer-events:none;filter:drop-shadow(0 3px 2px rgba(76,53,117,.18))}.character-outfit::before,.character-outfit::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:2px solid var(--outfit-dark)}.character-outfit::before{width:100%;height:45%;border-radius:28% 28% 18% 18%;background:linear-gradient(90deg,transparent 46%,#fff 46% 54%,transparent 54%),var(--outfit)}.character-outfit::after{top:39%;width:92%;height:47%;border-radius:12% 12% 42% 42%;background:repeating-linear-gradient(90deg,var(--outfit) 0 16%,#fff 17% 20%,var(--outfit) 21% 34%)}.character-outfit.hanfu-cloud{--outfit:#a7f3d0;--outfit-dark:#3f8f86;top:55%;height:36%}.character-outfit.hanfu-cloud::after{height:61%;background:linear-gradient(#d1fae5,#fffbeb)}.character-outfit.denim-street{--outfit:#93c5fd;--outfit-dark:#2563eb}.character-outfit.ballet-pink{--outfit:#f9a8d4;--outfit-dark:#db2777}.character-outfit.coquette-red{--outfit:#fb7185;--outfit-dark:#be123c}.character-outfit.techwear-black{--outfit:#374151;--outfit-dark:#111827}.character-outfit.summer-sundress{--outfit:#fde68a;--outfit-dark:#d97706}.character-outfit.office-chic{--outfit:#e5e7eb;--outfit-dark:#374151}.character-outfit.idol-silver{--outfit:#c4b5fd;--outfit-dark:#6d28d9}.character-outfit.winter-coat{--outfit:#93c5fd;--outfit-dark:#2563eb;top:54%;height:36%}.character[data-stage="1"] .character-outfit{--body-scale:.87}.character[data-stage="2"] .character-outfit{--body-scale:.93}.character[data-stage="4"] .character-outfit{--body-scale:1.07}.character[data-stage="5"] .character-outfit{--body-scale:1.15}
+      html[data-ui-theme="soft"] { --text:#4c3575; --muted:#8a74aa; --line:#e7d8ff; --purple:#a78bfa; --mint:#8eddd3; --pink:#f8bbd9; --honey:#ffbf8a; }
+      html[data-ui-theme="soft"] body { background:radial-gradient(circle at 12% 8%, rgba(221,248,245,.9), transparent 24rem),radial-gradient(circle at 88% 4%, rgba(248,187,217,.45), transparent 24rem),linear-gradient(180deg,#f8f4ff,#fff7fb); }
+      html[data-ui-theme="mono"] { --text:#111; --muted:#5e5e5e; --line:#111; --purple:#111; --mint:#444; --pink:#777; --honey:#aaa; }
+      html[data-ui-theme="liquid"] { --text:#17324d; --muted:#4e6f92; --line:rgba(255,255,255,.74); --purple:#60a5fa; --mint:#22d3ee; --pink:#c4b5fd; --honey:#93c5fd; }
+      html[data-ui-theme="y2k"] { --text:#4a145c; --muted:#8b2b91; --line:#ff74d4; --purple:#ff2fb3; --mint:#00d5ff; --pink:#ff9de4; --honey:#fff176; }
+      html[data-ui-theme="neo"] { --text:#111; --muted:#3d3d3d; --line:#111; --purple:#ff4d4d; --mint:#3ecf8e; --pink:#ffd447; --honey:#ff4d4d; }
+      html[data-ui-theme="cyber"] { --text:#eafff7; --muted:#9dfbd6; --line:rgba(57,255,20,.62); --purple:#39ff14; --mint:#00e5ff; --pink:#ff3df2; --honey:#39ff14; }
+      html[data-ui-theme="mono"] body { background:linear-gradient(180deg,#fff,#efefeb); }
+      html[data-ui-theme="liquid"] body { background:radial-gradient(circle at 14% 12%,rgba(125,211,252,.56),transparent 22rem),radial-gradient(circle at 86% 18%,rgba(196,181,253,.62),transparent 24rem),linear-gradient(180deg,#f8fcff,#e9f1ff); }
+      html[data-ui-theme="y2k"] body { background:radial-gradient(circle at 16% 16%,rgba(34,211,238,.42),transparent 18rem),radial-gradient(circle at 82% 10%,rgba(255,0,153,.36),transparent 20rem),linear-gradient(180deg,#fff1fb,#eefcff); }
+      html[data-ui-theme="neo"] body { background:linear-gradient(90deg,rgba(17,17,17,.05) 1px,transparent 1px),linear-gradient(180deg,rgba(17,17,17,.05) 1px,transparent 1px),linear-gradient(180deg,#fff7d6,#f5f0ff); background-size:28px 28px,28px 28px,auto; }
+      html[data-ui-theme="cyber"] body { background:radial-gradient(circle at 14% 18%,rgba(57,255,20,.22),transparent 18rem),radial-gradient(circle at 86% 16%,rgba(0,229,255,.2),transparent 20rem),linear-gradient(180deg,#05070b,#101421); }
+      html[data-ui-theme] .phone, html[data-ui-theme] .glass, html[data-ui-theme] .nav, html[data-ui-theme] input, html[data-ui-theme] .stat, html[data-ui-theme] .pill, html[data-ui-theme] .theme-option, html[data-ui-theme] .theme-toggle { border-color:var(--line); color:var(--text); }
+      html[data-ui-theme="mono"] .phone, html[data-ui-theme="mono"] .glass, html[data-ui-theme="mono"] .nav, html[data-ui-theme="mono"] .stat, html[data-ui-theme="mono"] input { background:rgba(255,255,255,.96); box-shadow:none; border-color:#111; border-radius:12px; }
+      html[data-ui-theme="liquid"] .phone, html[data-ui-theme="liquid"] .glass, html[data-ui-theme="liquid"] .nav, html[data-ui-theme="liquid"] .stat, html[data-ui-theme="liquid"] input { background:rgba(255,255,255,.42); box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 20px 52px rgba(56,105,150,.16); border-color:rgba(255,255,255,.74); }
+      html[data-ui-theme="y2k"] .phone, html[data-ui-theme="y2k"] .glass, html[data-ui-theme="y2k"] .nav, html[data-ui-theme="y2k"] .stat, html[data-ui-theme="y2k"] input { background:rgba(255,255,255,.84); box-shadow:0 14px 0 rgba(0,213,255,.18),0 24px 48px rgba(255,47,179,.18); border-color:#ff74d4; }
+      html[data-ui-theme="neo"] .phone, html[data-ui-theme="neo"] .glass, html[data-ui-theme="neo"] .nav, html[data-ui-theme="neo"] .stat, html[data-ui-theme="neo"] input, html[data-ui-theme="neo"] button { background:#fffdf0; border:2px solid #111; border-radius:0; box-shadow:6px 6px 0 #111; }
+      html[data-ui-theme="cyber"] .phone, html[data-ui-theme="cyber"] .glass, html[data-ui-theme="cyber"] .nav, html[data-ui-theme="cyber"] .stat, html[data-ui-theme="cyber"] input { background:rgba(14,20,32,.88); box-shadow:inset 0 0 0 1px rgba(0,229,255,.16),0 0 30px rgba(57,255,20,.12); border-color:rgba(57,255,20,.62); }
+      html[data-ui-theme] .primary, html[data-ui-theme] .mode.selected, html[data-ui-theme] .pill.selected, html[data-ui-theme] .nav button.selected, html[data-ui-theme] .theme-option.selected { background:linear-gradient(135deg,var(--mint),var(--purple)); color:var(--text); }
+      .nav {
+        position: fixed;
+        left: 50%;
+        bottom: calc(14px + var(--safe-bottom));
+        z-index: 9;
+        width: min(100% - 28px, 402px);
+        transform: translateX(-50%);
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:8px;
+        border:1px solid rgba(255,255,255,.84);
+        border-radius:28px;
+        background:rgba(255,255,255,.76);
+        padding:9px;
+        box-shadow:0 18px 40px rgba(76,53,117,.14);
+        backdrop-filter:blur(16px);
+      }
+      .nav button { border:0; border-radius:20px; background:transparent; color:#8a74aa; padding:9px 6px; text-align:center; font-size:11px; font-weight:950; }
+      .nav button.selected { background:linear-gradient(135deg,#ddf8f5,#f3e8ff); color:#4c3575; }
+      .modal, .loading-cover { position:fixed; inset:0; z-index:20; display:none; place-items:center; padding:20px; background:rgba(76,53,117,.18); backdrop-filter:blur(8px); }
+      .modal.active, .loading-cover.active { display:grid; }
+      .modal-card, .loading-card { width:min(100%,370px); padding:16px; animation:modal-enter 220ms ease both; }
+      .toast { position:fixed; left:50%; bottom:calc(6rem + var(--safe-bottom)); z-index:30; transform:translateX(-50%); width:min(360px,calc(100% - 32px)); border-radius:24px; background:rgba(255,255,255,.92); border:1px solid rgba(255,255,255,.84); box-shadow:0 14px 34px rgba(76,53,117,.16); padding:12px 14px; color:#6d5a8c; font-size:13px; font-weight:950; display:none; align-items:center; gap:10px; overflow:hidden; backdrop-filter:blur(14px); }
+      .toast.active { display:flex; animation:toast-enter 260ms ease both; }
+      .toast.info { border-color:rgba(231,216,255,.9); color:#4c3575; }
+      .toast.success { border-color:rgba(142,221,211,.7); background:rgba(244,255,253,.94); color:#226962; }
+      .toast.warning { border-color:rgba(255,191,138,.8); background:rgba(255,248,238,.94); color:#87541c; }
+      .toast-dot { width:10px; height:10px; flex-shrink:0; border-radius:999px; background:#a78bfa; box-shadow:0 0 0 5px rgba(167,139,250,.16); }
+      .toast.success .toast-dot { background:#8eddd3; box-shadow:0 0 0 5px rgba(142,221,211,.2); }
+      .toast.warning .toast-dot { background:#ffbf8a; box-shadow:0 0 0 5px rgba(255,191,138,.2); }
+      .toast-message { min-width:0; flex:1; line-height:1.35; }
+      .toast-progress { position:absolute; left:16px; right:16px; bottom:0; height:2px; border-radius:999px; background:rgba(167,139,250,.55); transform-origin:left; animation:toast-progress 1.9s linear both; }
+      .toast.success .toast-progress { background:rgba(101,207,194,.65); }
+      .toast.warning .toast-progress { background:rgba(255,170,97,.7); }
+      .loading-spinner { display:inline-block; width:1rem; height:1rem; border:2px solid rgba(255,255,255,.58); border-top-color:#fff; border-radius:999px; animation:spin-soft 780ms linear infinite; }
+      .purple-spinner { border-color:rgba(167,139,250,.28); border-top-color:#a78bfa; }
+      .skeleton-shimmer { position:relative; overflow:hidden; background:rgba(255,255,255,.68); }
+      .skeleton-shimmer::after { content:""; position:absolute; inset:0; transform:translateX(-110%); background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent); animation:skeleton-shimmer 1.4s ease-in-out infinite; }
+      .estimate-pop { animation:estimate-pop 220ms ease both; }
+      @media (max-width: 430px) {
+        h1 { font-size: 34px; }
+        h2 { font-size: 23px; }
+        .phone { width: min(100% - 40px, 390px); max-width: calc(100vw - 40px); border-radius: 32px; }
+        .nav { width: min(100% - 40px, 374px); }
+        main { padding-left:16px; padding-right:16px; }
+        .estimate-grid.estimate-fields { grid-template-columns:1fr; }
+        .estimate-head { display:grid; }
+      }
+      @media (max-width: 380px) {
+        main { padding-left:16px; padding-right:16px; }
+        .actions, .grid-2 { gap: 10px; }
+        .primary, .secondary, .mode { padding:12px 13px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+      }
+      @keyframes screen-enter { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes modal-enter { from{opacity:0;transform:translateY(14px) scale(.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+      @keyframes toast-enter { from{opacity:0;transform:translate(-50%,10px) scale(.98)} to{opacity:1;transform:translate(-50%,0) scale(1)} }
+      @keyframes toast-progress { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+      @keyframes estimate-pop { from{opacity:.72;transform:translateY(6px) scale(.99)} to{opacity:1;transform:translateY(0) scale(1)} }
+      @keyframes selected-pop { 0%{transform:scale(.97)} 68%{transform:scale(1.025)} 100%{transform:scale(1)} }
+      @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+      @keyframes spin-soft { to{transform:rotate(360deg)} }
+      @keyframes submit-sheen { 0%{transform:translateX(-120%)} 56%,100%{transform:translateX(120%)} }
+      @keyframes status-pulse { 0%,100%{opacity:.68;transform:scale(.92)} 50%{opacity:1;transform:scale(1.12)} }
+      @keyframes skeleton-shimmer { from{transform:translateX(-110%)} to{transform:translateX(110%)} }
+      @keyframes tap-burst { 0%{width:0;height:0;opacity:.72} 100%{width:9rem;height:9rem;opacity:0} }
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>今天不喝</span><span>100%</span></div>
+      <main>
+        <section class="view stack active" data-page="home">
+          <header><p class="eyebrow" id="home-subtitle">和奶茶说拜拜的第 1 天</p><h1>今天不喝</h1></header>
+          <div id="home-character"></div>
+          <div class="stats" id="home-stats"></div>
+          <section class="glass stack" style="padding:16px">
+            <div id="home-today"></div>
+            <div class="today-panel"><strong id="home-streak">连续 0 天记录</strong><p class="hint" style="margin-top:6px">每次选择都有被认真看见。</p></div>
+            <div class="actions">
+              <button class="primary" data-start="saved"><small>虚拟下单</small><br />今天戒了</button>
+              <button class="secondary" data-start="consumed"><small>温柔记录</small><br />今天喝了</button>
+            </div>
+          </section>
+        </section>
+        <section class="view stack" data-page="record">
+          <header><p class="eyebrow">每一次选择，都离目标更近一点</p><h2>记录一杯</h2></header>
+          <div id="record-character"></div>
+          <form class="glass stack" id="drink-form" style="padding:20px">
+            <div class="grid-2">
+              <button class="mode selected" data-mode="saved" type="button"><strong>今天戒了</strong><br /><small>虚拟下单，不真的喝</small></button>
+              <button class="mode" data-mode="consumed" type="button"><strong>今天喝了</strong><br /><small>真实记录，温柔看见</small></button>
+            </div>
+            <div class="field"><span class="label">饮品类型</span><small class="hint">会影响默认价格、热量和糖分</small><div class="pills" data-group="drinkType"></div></div>
+            <label class="field"><span class="label">饮品名称</span><small class="hint">命中本地预设时估算更准确；自定义饮品会尝试智能分析。</small><input id="drinkName" placeholder="例如：喜茶多肉葡萄" /></label>
+            <div class="field"><span class="label">杯型</span><small class="hint">杯型会调整热量估算</small><div class="pills" data-group="size"></div></div>
+            <div class="field"><span class="label">冰量</span><small class="hint">只记录，不参与计算</small><div class="pills" data-group="ice"></div></div>
+            <div class="field"><span class="label">糖量</span><small class="hint">影响热量和糖分</small><div class="pills" data-group="sugar"></div></div>
+            <div class="field"><span class="label">小料</span><small class="hint">可多选，会增加价格和摄入</small><div class="pills" data-group="toppings"></div></div>
+            <label class="field"><span class="label">自定义小料</span><small class="hint">留空不计算；填写后会尝试智能分析，失败时回退本地。</small><input id="customTopping" placeholder="例如：奶盖、布丁、麻薯" /></label>
+            <div class="estimate-pop glass" id="estimate" style="padding:15px"></div>
+            <button class="primary" id="submit-record" type="submit">确认不下单</button>
+          </form>
+        </section>
+        <section class="view stack" data-page="data">
+          <header><p class="eyebrow">状态、统计和历史都在这里</p><h2>我的数据</h2></header>
+          <div id="data-character"></div>
+          <div class="glass" style="padding:20px"><p class="eyebrow">连续打卡</p><h1 id="streak">0 天</h1></div>
+          <div class="glass" style="padding:20px" id="trend-card"></div>
+          <div class="stats" id="data-stats"></div>
+          <div class="glass" style="padding:20px" id="data-score-meter"></div>
+          <div class="glass" style="padding:20px"><p class="eyebrow">角色成长</p><h2 id="stage-title">当前阶段 S3</h2><div class="stage-grid" id="stage-progress"></div></div>
+          <div class="glass" style="padding:20px"><h2>历史记录</h2><div class="history" id="history"></div></div>
+          <button class="danger" id="reset">清空所有记录</button>
+        </section>
+        <section class="view stack" data-page="profile">
+          <header><p class="eyebrow">个人账号与同步</p><h2>我的</h2></header>
+          <section class="glass account-card"><div class="avatar">今</div><div style="min-width:0"><strong style="display:block;font-size:18px">本地体验账号</strong><p class="hint" style="margin-top:6px">第一版暂不登录，数据保存在当前浏览器。后续可迁移到微信小程序云存储或 iOS 本地账号。</p></div></section>
+          <div class="stats" id="profile-stats"></div>
+          <section class="glass theme-controls" id="theme-controls" style="padding:20px"></section>
+          <section class="glass stack" id="wardrobe-shop" style="padding:20px"></section>
+          <section class="glass stack" style="padding:20px"><h2 style="font-size:20px">后续账号数据</h2><div style="border-radius:22px;background:rgba(255,255,255,.65);padding:14px"><strong>微信小程序</strong><p class="hint" style="margin-top:6px">可接入 openid、云数据库、跨设备同步和订阅提醒。</p></div><div style="border-radius:22px;background:rgba(255,255,255,.65);padding:14px"><strong>iOS 应用</strong><p class="hint" style="margin-top:6px">可接入 UserDefaults、iCloud、健康提醒和桌面小组件。</p></div></section>
+        </section>
+      </main>
+    </div>
+    <nav class="nav" aria-label="底部导航"><button class="selected" data-view="home">首页</button><button data-view="record">记录</button><button data-view="data">数据</button><button data-view="profile">我的</button></nav>
+    <div class="modal" id="result-modal"><div class="glass modal-card" id="result-card"></div></div>
+    <div class="modal" id="reset-modal"><div class="glass modal-card"><div style="border-radius:28px;background:linear-gradient(135deg,#fff0f7,#f3e8ff);padding:18px"><p class="eyebrow">谨慎操作</p><h2 style="font-size:24px">确认清空所有记录？</h2><p class="hint" style="margin-top:8px">清空后会恢复到初始 Body Score 50，历史记录和统计数据都会从本地移除。</p></div><div class="grid-2" style="margin-top:14px"><button class="secondary" id="cancel-reset" style="text-align:center">先保留</button><button class="primary" id="confirm-reset" style="text-align:center;background:linear-gradient(90deg,#f8bbd9,#ffbf8a)">确认清空</button></div></div></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="loading-cover active" id="preview-loading"><div class="glass loading-card"><div class="skeleton-shimmer" style="width:120px;height:12px;border-radius:999px"></div><div class="skeleton-shimmer" style="width:190px;height:32px;border-radius:999px;margin-top:12px"></div><div class="skeleton-shimmer" style="height:270px;border-radius:30px;margin-top:18px"></div><div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;color:#8a74aa;font-size:14px;font-weight:900"><span class="loading-spinner purple-spinner"></span>正在读取本地记录</div></div></div>
+
+    <script>
+      const KEY = "milkTeaAppData";
+      const KEY_UI = "milkTeaUiPreferences";
+      const KEY_WARDROBE = "milkTeaWardrobe";
+      const COINS_PER_SAVED_CUP = 10;
+      const OUTFITS = [
+        {id:"default",name:"元气日常",price:0,accent:"#f3e8ff"},{id:"kpop-lilac",name:"薰衣草舞台",price:100,accent:"#e9d5ff",asset:"images/outfits/kpop-lilac.png"},
+        {id:"hanfu-cloud",name:"云纹汉服",price:150,accent:"#d1fae5",asset:"images/outfits/hanfu-cloud.png"},{id:"denim-street",name:"丹宁街头",price:180,accent:"#dbeafe",asset:"images/outfits/denim-street.png"},
+        {id:"ballet-pink",name:"芭蕾粉雾",price:220,accent:"#fce7f3",asset:"images/outfits/ballet-pink.png"},{id:"coquette-red",name:"樱桃蝴蝶结",price:260,accent:"#fee2e2",asset:"images/outfits/coquette-red.png"},
+        {id:"techwear-black",name:"夜行机能",price:310,accent:"#e5e7eb",asset:"images/outfits/techwear-black.png"},{id:"summer-sundress",name:"夏日奶油花",price:350,accent:"#fef3c7",asset:"images/outfits/summer-sundress.png"},
+        {id:"office-chic",name:"珍珠通勤",price:400,accent:"#f3f4f6",asset:"images/outfits/office-chic.png"},{id:"idol-silver",name:"银曜偶像",price:450,accent:"#e0e7ff",asset:"images/outfits/idol-silver.png"},
+        {id:"winter-coat",name:"冰蓝暖冬",price:500,accent:"#dbeafe",asset:"images/outfits/winter-coat.png"}
+      ];
+      const AI_ENDPOINTS = ["http://127.0.0.1:4173/api/estimate-drink"];
+      const UI_THEMES = [
+        { key:"soft", label:"软糖奶茶", desc:"粉紫薄荷与柔和玻璃感。" },
+        { key:"mono", label:"黑白极简", desc:"黑白灰、高留白、细边框。" },
+        { key:"liquid", label:"液态玻璃", desc:"通透蓝紫、模糊和高光。" },
+        { key:"y2k", label:"千禧甜心", desc:"高饱和粉、青、黄贴纸感。" },
+        { key:"neo", label:"新粗野", desc:"粗黑边、硬阴影、高对比。" },
+        { key:"cyber", label:"霓虹赛博", desc:"深色底与荧光描边。" }
+      ];
+      const initialStats = { totalSavedMoney:0,totalSpentMoney:0,netMoney:0,totalReducedCalories:0,totalAddedCalories:0,netCalories:0,totalReducedSugar:0,totalAddedSugar:0,netSugar:0,bodyScore:50,streakDays:0,records:[] };
+      const options = { drinkType:["奶茶","果茶","咖啡"], size:["小杯","中杯","大杯","超大杯"], ice:["正常冰","少冰","微冰","去冰","常温"], sugar:["正常糖","少糖","半糖","微糖","无糖"], toppings:["波霸","茶冻","椰果","芋圆"] };
+      const preset = { "霸王茶姬伯牙绝弦":{type:"奶茶",price:16,calories:220,sugarGram:18}, "喜茶多肉葡萄":{type:"果茶",price:29,calories:360,sugarGram:46}, "瑞幸生椰拿铁":{type:"咖啡",price:18,calories:235,sugarGram:17}, "古茗杨枝甘露":{type:"果茶",price:18,calories:380,sugarGram:48}, "一点点波霸奶茶":{type:"奶茶",price:15,calories:420,sugarGram:42} };
+      const defaults = { 奶茶:{price:18,calories:360,sugarGram:38}, 果茶:{price:17,calories:260,sugarGram:36}, 咖啡:{price:16,calories:190,sugarGram:18} };
+      const sizeFactor = { 小杯:.82, 中杯:1, 大杯:1.18, 超大杯:1.35 };
+      const sugarFactor = { 正常糖:1, 少糖:.78, 半糖:.52, 微糖:.28, 无糖:.08 };
+      const toppingCalories = { 波霸:95, 茶冻:45, 椰果:55, 芋圆:90 };
+      const toppingSugar = { 波霸:9, 茶冻:5, 椰果:8, 芋圆:10 };
+      const stageLabels = ["轻盈清爽","健康活力","稳定养成中","需要温柔照顾","负担有点大"];
+      let form = { mode:"saved", drinkType:"奶茶", drinkName:"", size:"中杯", ice:"少冰", sugar:"半糖", toppings:[], customTopping:"", manualEstimate:null };
+      let stats = load();
+      let uiPrefs = loadUiPreferences();
+      let estimateVersion = 0;
+      let currentEstimateBase = estimate();
+      let submitting = false;
+      let wardrobe = loadWardrobe();
+      const previewParams = new URLSearchParams(location.search);
+      const previewOutfit = previewParams.get("outfit");
+      const previewScore = Number(previewParams.get("score"));
+      if(OUTFITS.some(item=>item.id===previewOutfit)){ wardrobe={...wardrobe,owned:[...new Set([...wardrobe.owned,previewOutfit])],equipped:previewOutfit}; }
+      if(Number.isFinite(previewScore)){ stats.bodyScore=clamp(Math.round(previewScore),0,100); }
+
+      function loadWardrobe(){ try{ const raw=localStorage.getItem(KEY_WARDROBE); const value=raw?JSON.parse(raw):{}; const known=new Set(OUTFITS.map(item=>item.id)); const owned=["default",...((Array.isArray(value.owned)?value.owned:[]).filter(id=>known.has(id)&&id!=="default"))]; const equipped=known.has(value.equipped)&&owned.includes(value.equipped)?value.equipped:"default"; return {owned:[...new Set(owned)],equipped}; }catch{return {owned:["default"],equipped:"default"};} }
+      function saveWardrobe(){ try{ localStorage.setItem(KEY_WARDROBE,JSON.stringify(wardrobe)); return true; }catch{return false;} }
+      function outfit(id){ return OUTFITS.find(item=>item.id===id)||OUTFITS[0]; }
+      function earnedCoins(){ return stats.records.filter(record=>record.mode==="saved").length*COINS_PER_SAVED_CUP; }
+      function spentCoins(){ return wardrobe.owned.reduce((sum,id)=>sum+outfit(id).price,0); }
+      function coins(){ return Math.max(0,earnedCoins()-spentCoins()); }
+      function wardrobeHtml(){ const balance=coins(); return `<div><div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><div><p class="eyebrow">角色衣橱</p><h2 style="font-size:20px">用戒奶茶金币换新衣</h2></div><span class="coin-badge">${balance} 金币</span></div><p class="hint" style="margin-top:8px">每成功戒 1 杯获得 10 金币。服装从 10 到 50 杯的坚持兑换。</p><div class="wardrobe-grid">${OUTFITS.map(item=>{const owned=wardrobe.owned.includes(item.id),equipped=wardrobe.equipped===item.id;return `<article class="wardrobe-item ${equipped?"equipped":""}"><div class="outfit-swatch" style="background:${item.accent}">${item.asset?`<img src="${item.asset}" alt="${item.name}服装预览" />`:`<span class="mini-outfit ${item.id}"></span>`}</div><strong>${item.name}</strong>${owned?`<button data-equip-outfit="${item.id}" class="${equipped?"owned":"primary"}" type="button">${equipped?"已穿上":"换上"}</button>`:`<button data-buy-outfit="${item.id}" ${balance<item.price?"disabled":""} type="button">${item.price} 金币</button>`}</article>`;}).join("")}</div><p class="hint" style="margin-top:10px">当前穿着：${outfit(wardrobe.equipped).name}。服装会按 Body Score 阶段等比调整。</p></div>`; }
+
+      function clamp(value,min,max){ return Math.max(min, Math.min(max, value)); }
+      function today(){ return new Date().toISOString().slice(0,10); }
+      function roundMoney(value){ return Math.round(value*10)/10; }
+      function load(){ try{ const raw=localStorage.getItem(KEY); return raw ? rebuild(JSON.parse(raw).records || []) : {...initialStats}; }catch{ return {...initialStats}; } }
+      function loadUiPreferences(){ try{ const raw=localStorage.getItem(KEY_UI); const parsed=raw?JSON.parse(raw):{}; return { theme:UI_THEMES.some(item=>item.key===parsed.theme)?parsed.theme:"soft", showCharacter:typeof parsed.showCharacter==="boolean"?parsed.showCharacter:true }; }catch{ return { theme:"soft", showCharacter:true }; } }
+      function saveUiPreferences(){ try{ localStorage.setItem(KEY_UI, JSON.stringify(uiPrefs)); }catch{} }
+      function applyUiShell(){ document.documentElement.dataset.uiTheme=uiPrefs.theme; document.documentElement.dataset.characterVisibility=uiPrefs.showCharacter?"shown":"hidden"; }
+      function save(){ try{ localStorage.setItem(KEY, JSON.stringify(stats)); return true; }catch{ showToast("本地保存暂时失败，请检查浏览器存储权限","warning"); return false; } }
+      function clearStorage(){ try{ localStorage.removeItem(KEY); return true; }catch{ showToast("本地存储清理失败，页面仍会恢复初始状态","warning"); return false; } }
+      function rebuild(records){
+        return records.reduce((next,r)=>{ const saved=r.mode==="saved"; next.records.push(r); next.totalSavedMoney+=saved?r.price:0; next.totalSpentMoney+=saved?0:r.price; next.totalReducedCalories+=saved?r.calories:0; next.totalAddedCalories+=saved?0:r.calories; next.totalReducedSugar+=saved?r.sugarGram:0; next.totalAddedSugar+=saved?0:r.sugarGram; next.bodyScore=clamp(next.bodyScore+(saved?-2:2),0,100); return next; }, {...initialStats, records:[]});
+      }
+      function finalizeStats(){
+        stats.netMoney=roundMoney(stats.totalSavedMoney-stats.totalSpentMoney);
+        stats.netCalories=stats.totalReducedCalories-stats.totalAddedCalories;
+        stats.netSugar=stats.totalReducedSugar-stats.totalAddedSugar;
+        stats.totalSavedMoney=roundMoney(stats.totalSavedMoney);
+        stats.totalSpentMoney=roundMoney(stats.totalSpentMoney);
+        stats.streakDays=new Set(stats.records.map(r=>r.date.slice(0,10))).size;
+      }
+      function stage(score){ return score<=25?1:score<=45?2:score<=60?3:score<=80?4:5; }
+      function status(score){ return stageLabels[stage(score)-1]; }
+      function stat(label,value,tone="purple"){ return `<div class="stat"><small class="hint">${label}</small><strong>${value}</strong></div>`; }
+      function characterHtml(compact=false,bubble=false){ const currentStage=stage(stats.bodyScore); const clothing=wardrobe.equipped!=="default"?`<span class="character-outfit ${wardrobe.equipped}"></span>`:""; return `<div class="character ${compact?"compact":""}" data-character data-stage="${currentStage}"><span class="badge">${status(stats.bodyScore)}</span>${bubble?'<span class="bubble">你超棒的，每一次选择，都是更好的自己。</span>':""}<img src="images/girl-stage-${currentStage}-transparent.png" data-base="images/girl-stage-${currentStage}-transparent.png" data-blink="images/girl-stage-${currentStage}-blink.png" data-wave="images/girl-stage-${currentStage}-wave.png" onerror="fallbackCharacterImage(this)" alt="${status(stats.bodyScore)}" />${clothing}</div>`; }
+      function fallbackCharacterImage(image){ if(!image.dataset.fallback){ image.dataset.fallback="1"; image.src="images/girl-normal-transparent.png"; return; } const wrap=image.closest("[data-character]"); if(wrap) wrap.innerHTML='<div style="display:grid;min-height:inherit;place-items:center;padding:28px;color:#8a74aa;font-weight:800;text-align:center">角色图片未找到</div>'; }
+      function estimate(sourceForm=form){
+        const name=sourceForm.drinkName.trim().replace(/\s+/g,""); const hit=name?preset[name]:undefined; const base=hit||defaults[sourceForm.drinkType]; const toppings=sourceForm.toppings; const custom=sourceForm.customTopping.trim(); const hasCustom=Boolean(name&&!hit)||Boolean(custom);
+        const toppingKcal=toppings.reduce((sum,item)=>sum+toppingCalories[item],0); const toppingSugarTotal=toppings.reduce((sum,item)=>sum+toppingSugar[item],0);
+        return { price:Math.round((base.price*sizeFactor[sourceForm.size]+toppings.length*2+(custom?2:0))*10)/10, calories:Math.round(base.calories*sizeFactor[sourceForm.size]*(.72+sugarFactor[sourceForm.sugar]*.28)+toppingKcal+(custom?35:0)), sugarGram:Math.round(base.sugarGram*sugarFactor[sourceForm.sugar]*sizeFactor[sourceForm.size]+toppingSugarTotal+(custom?4:0)), source:hit?"本地预设":"默认估算", confidence:hit?"高":hasCustom?"低":"中", explanation:hit?"命中本地预设，并结合杯型、糖量和小料调整。":hasCustom?"正在用本地规则生成临时建议，服务端 AI 返回后会自动更新。":"未命中预设，按饮品类型默认值生成临时建议。" };
+      }
+      async function estimateSmart(sourceForm=form){
+        const localEstimate=estimate(sourceForm);
+        for(const endpoint of AI_ENDPOINTS){
+          try{
+            const response=await fetch(endpoint,{ method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({form:sourceForm,localEstimate}) });
+            if(!response.ok) continue;
+            const data=await response.json();
+            return { price:Number.isFinite(data.price)&&data.price>0?Math.round(data.price*10)/10:localEstimate.price, calories:Number.isFinite(data.calories)&&data.calories>=0?Math.round(data.calories):localEstimate.calories, sugarGram:Number.isFinite(data.sugarGram)&&data.sugarGram>=0?Math.round(data.sugarGram):localEstimate.sugarGram, source:"AI智能估算", confidence:["高","中","低"].includes(data.confidence)?data.confidence:"中", explanation:data.explanation||"由服务端 AI 根据饮品名、小料、杯型和糖量估算。" };
+          }catch{}
+        }
+        return localEstimate;
+      }
+      function applyManualEstimate(data, sourceForm=form){
+        const manual=sourceForm.manualEstimate||{}; const price=manual.price!==undefined?Math.round(Number(manual.price)*10)/10:data.price; const calories=manual.calories!==undefined?Math.round(Number(manual.calories)):data.calories; const sugarGram=manual.sugarGram!==undefined?Math.round(Number(manual.sugarGram)):data.sugarGram; const hasManual=manual.price!==undefined||manual.calories!==undefined||manual.sugarGram!==undefined;
+        if(!hasManual) return data;
+        return {...data,price,calories,sugarGram,explanation:`${data.explanation||"数据为估算值，仅供参考。"} 你已手动修正价格、热量或糖分，提交会以手动值为准。`};
+      }
+      function editableEstimateHtml(data, baseData=data, impactText){
+        const manual=form.manualEstimate||{}; const hasManual=manual.price!==undefined||manual.calories!==undefined||manual.sugarGram!==undefined;
+        const statusClass=baseData.source==="AI智能估算"?"connected":baseData.source==="AI智能分析中"?"checking":"local";
+        const statusText=baseData.source==="AI智能估算"?"AI已连接，已使用模型估算":baseData.source==="AI智能分析中"?"正在连接本机 AI 后端":"本地临时值，启动预览服务后会自动尝试 AI";
+        const field=(key,label,unit,step)=>`<label class="estimate-field ${manual[key]!==undefined?"edited":""}" data-estimate-shell="${key}"><small>${label}${manual[key]!==undefined?'<span class="edited-tag">已改</span>':""}</small><span class="estimate-input-wrap">${unit?`<b>${unit}</b>`:""}<input data-estimate-field="${key}" type="number" min="0" step="${step}" inputmode="decimal" value="${data[key]}" aria-label="${label}，可手动修改" /></span></label>`;
+        return `<div class="estimate-head"><strong>实时估算</strong><span class="estimate-meta"><span class="estimate-chip">${baseData.source} · 可信度${baseData.confidence}</span><button class="estimate-reset ${hasManual?"":"hidden"}" data-reset-estimate type="button">恢复建议值</button></span></div><div class="estimate-grid estimate-fields">${field("price","价格","¥","0.1")}${field("calories","热量","","1")}${field("sugarGram","糖分 g","","1")}</div><div class="estimate-impact">${impactText}</div><div class="estimate-status ${statusClass}"><span class="status-dot ${statusClass==="checking"?"status-pulse":""}"></span>${statusText}</div><div class="manual-status ${hasManual?"":"hidden"}">已应用手动值，提交会按你编辑的数字保存。</div><p class="hint" style="text-align:center;margin-top:8px">${data.explanation} 数据为估算值，仅供参考；可直接修改上方数字。</p>`;
+      }
+      async function renderEstimate(){ const version=++estimateVersion; const local=estimate(); const savedMode=form.mode==="saved"; const card=document.querySelector("#estimate"); currentEstimateBase=local; card.classList.remove("estimate-pop"); void card.offsetWidth; card.classList.add("estimate-pop"); card.innerHTML=editableEstimateHtml(applyManualEstimate(local),{...local,source:"AI智能分析中"},"正在调用服务端 AI 估算价格、热量和糖分"); const data=await estimateSmart(); if(version!==estimateVersion)return; currentEstimateBase=data; const viewData=applyManualEstimate(data); card.innerHTML=editableEstimateHtml(viewData,data,`提交后：钱包 ${savedMode?"+":"-"}¥${viewData.price} · ${savedMode?"少摄入":"增加"} ${viewData.calories} kcal · ${viewData.sugarGram}g 糖 · Body Score ${savedMode?"-2":"+2"}`); const btn=document.querySelector("#submit-record"); btn.disabled=submitting; btn.setAttribute("aria-busy",String(submitting)); btn.classList.toggle("submit-busy", submitting); btn.innerHTML=submitting?'<span style="display:inline-flex;align-items:center;gap:8px"><span class="loading-spinner"></span>记录中...</span>':savedMode?"确认不下单":"确认记录"; }
+      function scoreMeterHtml(){ return `<p class="eyebrow">Body Score</p><div style="display:flex;align-items:end;justify-content:space-between;gap:12px"><h2>${stats.bodyScore}</h2><span class="pill selected">${status(stats.bodyScore)}</span></div><div class="scorebar" aria-label="Body Score ${stats.bodyScore}，分数越低代表状态越轻盈"><span style="width:${stats.bodyScore}%"></span></div><p class="hint" style="margin-top:8px;display:flex;justify-content:space-between"><span>轻盈</span><span>轻盈度 ${100-stats.bodyScore}%</span><span>负担</span></p>`; }
+      function recentSevenDays(){ const days=[]; for(let i=6;i>=0;i--){ const date=new Date(); date.setDate(date.getDate()-i); const key=date.toISOString().slice(0,10); const records=stats.records.filter(r=>r.date.slice(0,10)===key); days.push({key,label:`${date.getMonth()+1}/${date.getDate()}`,saved:records.filter(r=>r.mode==="saved").length,consumed:records.filter(r=>r.mode==="consumed").length}); } return days; }
+      function trendHtml(){ const days=recentSevenDays(); const saved=days.reduce((s,d)=>s+d.saved,0); const consumed=days.reduce((s,d)=>s+d.consumed,0); return `<div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:14px"><div style="min-width:0"><h2 style="font-size:20px">最近 7 天趋势</h2><p class="hint">薄荷代表戒了，粉色代表喝了。</p></div><span class="pill selected">${saved}/${consumed}</span></div><div class="trend">${days.map(d=>`<div class="trend-day"><div class="trend-bars"><span class="bar saved" style="height:${Math.max(14,16+d.saved*18)}px"></span><span class="bar consumed" style="height:${Math.max(14,16+d.consumed*18)}px"></span></div><small class="hint">${d.label}</small></div>`).join("")}</div>${saved+consumed?"":'<p class="hint" style="margin-top:10px;text-align:center">最近 7 天还没有记录，提交后这里会出现趋势。</p>'}`; }
+      function todaySummaryHtml(){ const records=stats.records.filter(r=>r.date.slice(0,10)===today()); const savedRecords=records.filter(r=>r.mode==="saved"); const consumedRecords=records.filter(r=>r.mode==="consumed"); const netMoney=roundMoney(savedRecords.reduce((s,r)=>s+r.price,0)-consumedRecords.reduce((s,r)=>s+r.price,0)); const checked=records.length>0; return `<div class="today-panel ${checked&&netMoney<0?"consumed":""}" aria-live="polite"><div class="today-row"><div style="min-width:0"><p style="font-size:14px;font-weight:950">${checked?`今日已记录 ${records.length} 次`:"今日还没记录"}</p><small class="hint">${checked?`戒了 ${savedRecords.length} 次 · 喝了 ${consumedRecords.length} 次`:"选一个按钮开始，记录会保存在本地。"}</small></div><span class="today-badge">${checked?`${netMoney>=0?"+":""}¥${netMoney}`:"待打卡"}</span></div></div>`; }
+      function historyHtml(){ if(!stats.records.length)return '<div class="history-empty"><strong style="display:block;font-size:16px">还没有记录</strong><span class="hint" style="display:block;margin-top:8px">第一条选择会出现在这里，趋势和角色状态也会一起更新。</span></div>'; const groups=stats.records.slice(0,24).reduce((items,r)=>{ const date=r.date.slice(0,10); const delta=r.mode==="saved"?r.price:-r.price; const existing=items.find(i=>i.date===date); if(existing){existing.records.push(r);existing.netMoney+=delta;}else{items.push({date,records:[r],netMoney:delta});} return items; },[]); return groups.map(g=>`<section class="history-group"><div class="history-heading"><div style="min-width:0"><strong>${g.date.replaceAll("-",".")}</strong><br><small class="hint">${g.records.length} 条记录</small></div><span class="pill selected">净钱包 ${g.netMoney>=0?"+":""}¥${roundMoney(g.netMoney)}</span></div>${g.records.map(r=>{ const saved=r.mode==="saved"; return `<article class="record" aria-label="${r.drinkName||"未命名饮品"}，${saved?"今天戒了":"今天喝了"}"><div class="record-head"><div style="min-width:0"><strong style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.drinkName||"未命名饮品"}</strong><small class="hint">${saved?"今天戒了":"今天喝了"} · ${r.source} · ${r.confidence}可信度</small></div><div style="display:flex;gap:7px;align-items:center;flex-shrink:0"><span class="pill selected">${saved?"+":"-"}¥${r.price}</span><button class="delete-btn" data-delete="${r.id}" type="button">删除</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;color:#7d679d;font-size:12px;font-weight:800"><span style="border-radius:16px;background:#faf7ff;padding:8px 10px">${saved?"少摄入":"增加"} ${r.calories} kcal</span><span style="border-radius:16px;background:#faf7ff;padding:8px 10px">${saved?"少摄入":"增加"} ${r.sugarGram}g 糖</span></div>${r.explanation?`<p class="hint" style="margin-top:10px">${r.explanation}</p>`:""}</article>`; }).join("")}</section>`).join(""); }
+      function stageProgressHtml(){ const current=stage(stats.bodyScore); return stageLabels.map((label,index)=>`<span class="stage-dot ${index+1===current?"active":""}">S${index+1}</span>`).join(""); }
+      function render(){ finalizeStats(); document.querySelector("#home-subtitle").textContent=`和奶茶说拜拜的第 ${Math.max(stats.streakDays,1)} 天`; document.querySelector("#home-character").innerHTML=characterHtml(false,true); document.querySelector("#record-character").innerHTML=characterHtml(true,false); document.querySelector("#data-character").innerHTML=characterHtml(true,false); document.querySelector("#home-stats").innerHTML=stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories)+stat("累计减少糖分",`${stats.totalReducedSugar}g`,"pink")+stat("Body Score",stats.bodyScore,"amber"); document.querySelector("#home-today").innerHTML=todaySummaryHtml(); document.querySelector("#home-streak").textContent=`连续 ${stats.streakDays} 天记录`; document.querySelector("#data-stats").innerHTML=stat("当前状态",status(stats.bodyScore),"mint")+stat("Body Score",stats.bodyScore)+stat("已记录天数",stats.streakDays,"pink")+stat("累计记录",stats.records.length,"amber")+stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories); document.querySelector("#profile-stats").innerHTML=stat("登录状态","未登录")+stat("同步方式","本地","mint")+stat("本机记录",stats.records.length,"pink")+stat("存储 Key",KEY,"amber"); document.querySelector("#wardrobe-shop").innerHTML=wardrobeHtml(); document.querySelector("#streak").textContent=`${stats.streakDays} 天`; document.querySelector("#trend-card").innerHTML=trendHtml(); document.querySelector("#data-score-meter").innerHTML=scoreMeterHtml(); document.querySelector("#stage-title").textContent=`当前阶段 S${stage(stats.bodyScore)}`; document.querySelector("#stage-progress").innerHTML=stageProgressHtml(); document.querySelector("#history").innerHTML=historyHtml(); renderEstimate(); startCharacterMotion(); }
+      function themeControlsHtml(){ return `<div><p class="eyebrow">界面风格</p><h2 style="font-size:20px;margin-top:4px">换一套视觉皮肤</h2></div><div class="theme-options">${UI_THEMES.map(item=>`<button type="button" class="theme-option ${uiPrefs.theme===item.key?"selected":""}" data-theme-choice="${item.key}" aria-pressed="${uiPrefs.theme===item.key}"><strong>${item.label}<span class="theme-swatch ${item.key}"></span></strong><small>${item.desc}</small></button>`).join("")}</div><button type="button" class="theme-toggle" data-show-character aria-pressed="${uiPrefs.showCharacter}"><span><strong style="display:block">显示人物</strong><small class="hint">${uiPrefs.showCharacter?"首页、记录页和数据页会展示小人、Body Score 与阶段进度。":"已隐藏小人、Body Score、阶段进度和人物相关状态。"}</small></span><span class="switch" aria-hidden="true"></span></button>`; }
+      function syncResultModalCharacterText(){ if(uiPrefs.showCharacter)return; document.querySelectorAll("#result-card .hint").forEach(node=>{ node.textContent=node.textContent.replace(/\s*·\s*Body Score\s*[+-]2/g,""); }); }
+      function applyUiPreferencesToPreview(){ applyUiShell(); const show=uiPrefs.showCharacter; const controls=document.querySelector("#theme-controls"); if(controls) controls.innerHTML=themeControlsHtml(); ["#home-character","#record-character","#data-character"].forEach(selector=>{ const node=document.querySelector(selector); if(node&&!show) node.innerHTML=""; }); if(!show){ document.querySelector("#home-stats").innerHTML=stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories)+stat("累计减少糖分",`${stats.totalReducedSugar}g`,"pink"); document.querySelector("#data-stats").innerHTML=stat("已记录天数",stats.streakDays,"pink")+stat("累计记录",stats.records.length,"amber")+stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories); } document.querySelector("#data-score-meter")?.classList.toggle("hidden",!show); document.querySelector("#stage-progress")?.closest(".glass")?.classList.toggle("hidden",!show); syncResultModalCharacterText(); }
+      const renderBase = render;
+      render = function renderWithUiPreferences(){ renderBase(); applyUiPreferencesToPreview(); };
+      function syncMode(){ document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.toggle("selected", btn.dataset.mode===form.mode)); }
+      function syncPills(key){ const wrap=document.querySelector(`[data-group="${key}"]`); if(!wrap)return; wrap.innerHTML=options[key].map(value=>`<button type="button" class="pill ${key==="toppings"?form.toppings.includes(value)?"selected":"":form[key]===value?"selected":""}" data-pill="${key}" data-value="${value}" aria-pressed="${key==="toppings"?form.toppings.includes(value):form[key]===value}">${value}</button>`).join(""); }
+      function showToast(message,tone="info"){ const toast=document.querySelector("#toast"); toast.className=`toast active ${tone}`; toast.replaceChildren(); const dot=document.createElement("span"); dot.className="toast-dot"; dot.setAttribute("aria-hidden","true"); const text=document.createElement("span"); text.className="toast-message"; text.textContent=message; const progress=document.createElement("span"); progress.className="toast-progress"; progress.setAttribute("aria-hidden","true"); toast.append(dot,text,progress); window.clearTimeout(showToast.timer); showToast.timer=window.setTimeout(()=>toast.className=`toast ${tone}`,1900); }
+      function tapFeedback(kind="light"){ if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const pattern={light:12,success:[20,30,18],medium:22,warning:[18,25,34]}[kind]||12; navigator.vibrate?.(pattern); }
+      function startCharacterMotion(){ document.querySelectorAll("[data-character] img").forEach(image=>{ if(image.dataset.motionReady)return; image.dataset.motionReady="1"; window.setInterval(()=>{ if(image.dataset.fallback)return; const base=image.dataset.base; const blink=image.dataset.blink; const wave=image.dataset.wave; image.src=Math.random()>.65?wave:blink; window.setTimeout(()=>{ if(!image.dataset.fallback) image.src=base; },520); },3600+Math.random()*1200); }); }
+
+      Object.keys(options).forEach(syncPills);
+      syncMode();
+      render();
+      const previewView = new URLSearchParams(location.search).get("view");
+      if(["home","record","data","profile"].includes(previewView)){ document.querySelectorAll(".view").forEach(view=>view.classList.toggle("active",view.dataset.page===previewView)); document.querySelectorAll("[data-view]").forEach(button=>button.classList.toggle("selected",button.dataset.view===previewView)); }
+      window.setTimeout(()=>document.querySelector("#preview-loading").classList.remove("active"),420);
+      document.addEventListener("pointerdown",event=>{ const button=event.target.closest("button"); if(!button)return; const rect=button.getBoundingClientRect(); button.style.setProperty("--tap-x",`${event.clientX-rect.left}px`); button.style.setProperty("--tap-y",`${event.clientY-rect.top}px`); button.classList.remove("tap-burst"); void button.offsetWidth; button.classList.add("tap-burst"); tapFeedback("light"); },{passive:true});
+      document.querySelectorAll("[data-view]").forEach(btn=>btn.addEventListener("click",()=>{ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active", v.dataset.page===btn.dataset.view)); document.querySelectorAll("[data-view]").forEach(item=>item.classList.toggle("selected", item===btn)); }));
+      document.querySelectorAll("[data-start]").forEach(btn=>btn.addEventListener("click",()=>{ form.mode=btn.dataset.start; document.querySelector('[data-view="record"]').click(); syncMode(); renderEstimate(); }));
+      document.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>{ form.mode=btn.dataset.mode; syncMode(); renderEstimate(); }));
+      document.querySelector("#drinkName").addEventListener("input",event=>{ form.drinkName=event.target.value; form.manualEstimate=null; renderEstimate(); });
+      document.querySelector("#customTopping").addEventListener("input",event=>{ form.customTopping=event.target.value; form.manualEstimate=null; renderEstimate(); });
+      document.querySelector("#estimate").addEventListener("input",event=>{ const input=event.target.closest("[data-estimate-field]"); if(!input)return; const key=input.dataset.estimateField; const number=Number(input.value); const next={...(form.manualEstimate||{})}; if(input.value===""||!Number.isFinite(number)||number<0){ delete next[key]; } else { next[key]=key==="price"?Math.round(number*10)/10:Math.round(number); } form.manualEstimate=Object.keys(next).length?next:null; renderEstimate(); });
+      document.addEventListener("click",event=>{ const reset=event.target.closest("[data-reset-estimate]"); if(reset){ form.manualEstimate=null; renderEstimate(); showToast("已恢复智能建议值"); return; } const pill=event.target.closest("[data-pill]"); if(pill){ const key=pill.dataset.pill; const value=pill.dataset.value; if(key==="toppings"){ form.toppings=form.toppings.includes(value)?form.toppings.filter(item=>item!==value):[...form.toppings,value]; } else { form[key]=value; } form.manualEstimate=null; syncPills(key); renderEstimate(); } const del=event.target.closest("[data-delete]"); if(del){ tapFeedback("warning"); stats=rebuild(stats.records.filter(r=>r.id!==del.dataset.delete)); finalizeStats(); save(); render(); showToast("已删除这条记录，并重新计算统计。","success"); } });
+      document.querySelector("#drink-form").addEventListener("submit",event=>{ event.preventDefault(); if(submitting)return; submitting=true; renderEstimate(); const formSnapshot=JSON.parse(JSON.stringify(form)); const statsSnapshot=stats; window.setTimeout(async()=>{ const data=applyManualEstimate(await estimateSmart(formSnapshot),formSnapshot); const name=formSnapshot.drinkName.trim()||`${formSnapshot.drinkType}小确幸`; const {manualEstimate,...storedForm}=formSnapshot; const record={id:`record-${Date.now()}-${Math.random().toString(16).slice(2)}`,date:new Date().toISOString(),...storedForm,drinkName:name,...data}; stats=rebuild([record,...statsSnapshot.records]); finalizeStats(); save(); submitting=false; form={mode:"saved",drinkType:"奶茶",drinkName:"",size:"中杯",ice:"少冰",sugar:"半糖",toppings:[],customTopping:"",manualEstimate:null}; document.querySelector("#drinkName").value=""; document.querySelector("#customTopping").value=""; render(); syncMode(); Object.keys(options).forEach(syncPills); const saved=record.mode==="saved"; tapFeedback(saved?"success":"medium"); document.querySelector("#result-card").innerHTML=`<div style="border-radius:28px;background:${saved?"linear-gradient(135deg,#ddf8f5,#f3e8ff)":"linear-gradient(135deg,#fff0f7,#fff4dd)"};padding:18px"><p class="eyebrow">${saved?"轻盈一步":"温柔记录"}</p><h2>${saved?"下单成功":"已记录"}</h2><p class="hint" style="margin-top:8px">${saved?"帮你省下":"已经花出"} ¥${record.price} · ${saved?"少摄入":"增加"} ${record.calories} kcal · ${record.sugarGram}g 糖 · Body Score ${saved?"-2":"+2"}</p><p class="hint" style="margin-top:8px">${record.explanation||"数据为估算值，仅供参考。"}</p>${saved?`<div style="display:inline-flex;align-items:center;gap:7px;margin-top:14px;border:1px solid #f2cb62;border-radius:999px;background:#fff6cf;padding:8px 13px;color:#9a6512;font-size:14px;font-weight:900;box-shadow:0 8px 18px rgba(242,203,98,.24)"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#f4c54f;color:#fff">+</span>下单成功，加 10 金币</div>`:""}</div><button class="primary" style="margin-top:14px;width:100%;text-align:center" onclick="document.querySelector('#result-modal').classList.remove('active')">好的</button>`; document.querySelector("#result-modal").classList.add("active"); },260); });
+      document.addEventListener("click",event=>{ const theme=event.target.closest("[data-theme-choice]"); if(theme){ uiPrefs={...uiPrefs,theme:theme.dataset.themeChoice}; saveUiPreferences(); applyUiPreferencesToPreview(); showToast("界面风格已切换","success"); return; } const toggle=event.target.closest("[data-show-character]"); if(toggle){ uiPrefs={...uiPrefs,showCharacter:!uiPrefs.showCharacter}; saveUiPreferences(); render(); showToast(uiPrefs.showCharacter?"人物展示已开启":"人物展示已隐藏","info"); } });
+      document.addEventListener("click",event=>{ const buy=event.target.closest("[data-buy-outfit]"); if(buy){ const next=outfit(buy.dataset.buyOutfit); if(coins()<next.price){ showToast(`金币还差 ${next.price-coins()}，再成功戒几杯就可以啦`,"warning"); return; } wardrobe={...wardrobe,owned:[...wardrobe.owned,next.id]}; saveWardrobe(); render(); showToast(`已兑换 ${next.name}，快给小人换上吧`,"success"); return; } const equip=event.target.closest("[data-equip-outfit]"); if(equip){ wardrobe={...wardrobe,equipped:equip.dataset.equipOutfit}; saveWardrobe(); render(); showToast(`已换上 ${outfit(wardrobe.equipped).name}`,"success"); } });
+      new MutationObserver(syncResultModalCharacterText).observe(document.querySelector("#result-card"),{childList:true,subtree:true});
+      document.querySelector("#reset").addEventListener("click",()=>document.querySelector("#reset-modal").classList.add("active"));
+      document.querySelector("#cancel-reset").addEventListener("click",()=>document.querySelector("#reset-modal").classList.remove("active"));
+      document.querySelector("#confirm-reset").addEventListener("click",()=>{ tapFeedback("warning"); const cleared=clearStorage(); stats=rebuild([]); wardrobe={owned:["default"],equipped:"default"}; saveWardrobe(); finalizeStats(); render(); document.querySelector("#reset-modal").classList.remove("active"); showToast(cleared?"已清空记录、金币和衣橱，Body Score 已恢复到 50":"页面已重置，但本地存储清理失败",cleared?"success":"warning"); });
+    </script>
+  </body>
+</html>
