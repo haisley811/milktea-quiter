@@ -1,0 +1,52 @@
+{
+  "name": "today-no-milktea",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check:github-ready": "node scripts/check-github-ready.mjs",
+    "check:goal-status": "node scripts/check-goal-status.mjs",
+    "check:launch-handoff": "node scripts/check-launch-handoff.mjs",
+    "check:qwen-env": "node scripts/check-qwen-env.mjs",
+    "github:connect": "node scripts/connect-github-remote.mjs",
+    "launch:mark-public-api": "node scripts/mark-public-api-verified.mjs",
+    "launch:mark-wechat-domain": "node scripts/mark-wechat-domain-verified.mjs",
+    "wechat:set-appid": "node scripts/set-wechat-appid.mjs",
+    "wechat:set-api-url": "node scripts/set-wechat-api-base-url.mjs",
+    "preview": "node scripts/serve-preview.mjs",
+    "preview:lan": "node scripts/serve-preview.mjs",
+    "smoke:preview": "node scripts/smoke-preview.mjs",
+    "verify:api-live": "node scripts/verify-preview-ai.mjs",
+    "verify:public-api": "node scripts/verify-public-api.mjs",
+    "verify:qwen-direct": "node scripts/verify-qwen-direct.mjs",
+    "verify:launch-url": "node scripts/verify-public-api.mjs",
+    "verify:core": "node --experimental-strip-types scripts/verify-core.mjs",
+    "verify:project": "node scripts/verify-project.mjs",
+    "verify:preview-ui": "node scripts/verify-preview-ui.mjs",
+    "verify:ui-preferences": "node scripts/verify-ui-preferences.mjs",
+    "verify:wechat-template": "node scripts/verify-wechat-template.mjs",
+    "smoke:wechat-template": "node scripts/smoke-wechat-template.mjs",
+    "verify:responsive": "node scripts/verify-responsive.mjs",
+    "verify:deploy": "node scripts/verify-deploy.mjs",
+    "verify": "npm run verify:core && npm run verify:project && npm run verify:preview-ui && npm run verify:ui-preferences && npm run verify:wechat-template && npm run smoke:wechat-template && npm run verify:responsive && npm run verify:deploy"
+  },
+  "dependencies": {
+    "next": "15.3.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.8",
+    "@types/node": "22.15.29",
+    "@types/react": "19.0.14",
+    "@types/react-dom": "19.0.11",
+    "tailwindcss": "4.1.8",
+    "typescript": "5.8.3"
+  }
+}
