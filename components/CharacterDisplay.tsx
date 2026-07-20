@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCharacterStageMeta } from "@/lib/character";
 import { findOutfit, type OutfitId } from "@/lib/wardrobe";
 
@@ -21,12 +21,6 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
   const [missing, setMissing] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
-  const framePath = useMemo(() => {
-    if (motionFrame === "blink") return stageMeta.blinkImagePath;
-    if (motionFrame === "wave") return stageMeta.waveImagePath;
-    return stageMeta.imagePath;
-  }, [motionFrame, stageMeta.blinkImagePath, stageMeta.imagePath, stageMeta.waveImagePath]);
-
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReduceMotion(query.matches);
@@ -40,10 +34,6 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
     setSrc(stageMeta.imagePath);
     setMissing(false);
   }, [stageMeta.imagePath]);
-
-  useEffect(() => {
-    setSrc(framePath);
-  }, [framePath]);
 
   useEffect(() => {
     if (reduceMotion || missing) return;
@@ -85,18 +75,32 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
             角色图片未找到
           </div>
         ) : (
-          <img
-            src={src}
-            alt={stageMeta.status}
-            className={`floaty mx-auto block h-auto w-full object-contain ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
-            onError={() => {
-              if (src !== "/images/girl-normal-transparent.png") {
-                setSrc("/images/girl-normal-transparent.png");
-                return;
-              }
-              setMissing(true);
-            }}
-          />
+          <div className="relative">
+            <img
+              src={src}
+              alt={stageMeta.status}
+              className={`floaty mx-auto block h-auto w-full object-contain ${motionFrame === "base" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
+              onError={() => {
+                if (src !== "/images/girl-normal-transparent.png") {
+                  setSrc("/images/girl-normal-transparent.png");
+                  return;
+                }
+                setMissing(true);
+              }}
+            />
+            <img
+              src={stageMeta.blinkImagePath}
+              alt=""
+              aria-hidden="true"
+              className={`floaty pointer-events-none absolute inset-0 mx-auto block h-auto w-full object-contain ${motionFrame === "blink" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
+            />
+            <img
+              src={stageMeta.waveImagePath}
+              alt=""
+              aria-hidden="true"
+              className={`floaty pointer-events-none absolute inset-0 mx-auto block h-auto w-full object-contain ${motionFrame === "wave" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
+            />
+          </div>
         )}
         {outfitId !== "default" ? <div className={`character-outfit character-outfit-${outfitId}`} aria-label={`当前穿着：${outfit.name}`} /> : null}
         <div className="absolute inset-x-4 bottom-4 z-10 rounded-[22px] border border-white/75 bg-white/72 px-3 py-2 text-xs font-semibold leading-snug text-[#6D5A8C] shadow-[0_10px_24px_rgba(76,53,117,0.1)] backdrop-blur-xl">

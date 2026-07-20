@@ -124,6 +124,10 @@
       .bubble { right: 18px; bottom: 18px; max-width: 176px; border-radius: 22px; padding: 12px; line-height: 1.35; }
       .character img { position:absolute; inset:auto 0 0; width:100%; height:94%; object-fit:contain; object-position:center bottom; animation: floaty 4.5s ease-in-out infinite; }
       .character.compact img { height: 100%; }
+      .character .motion-frame { opacity:0; pointer-events:none; will-change:opacity,transform; }
+      .character .motion-base { opacity:1; }
+      .character.is-blinking .motion-base, .character.is-waving .motion-base { opacity:0; }
+      .character.is-blinking .motion-blink, .character.is-waving .motion-wave { opacity:1; }
       .stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
       .stat { min-width:0; border-radius:24px; padding:14px; background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.84); }
       .stat strong { display:block; color:var(--text); font-size:20px; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -437,6 +441,7 @@
       const previewParams = new URLSearchParams(location.search);
       const previewOutfit = previewParams.get("outfit");
       const previewScore = Number(previewParams.get("score"));
+      const previewMotion = ["blink","wave"].includes(previewParams.get("motion")) ? previewParams.get("motion") : "";
       if(OUTFITS.some(item=>item.id===previewOutfit)){ wardrobe={...wardrobe,owned:[...new Set([...wardrobe.owned,previewOutfit])],equipped:previewOutfit}; }
       if(Number.isFinite(previewScore)){ stats.bodyScore=clamp(Math.round(previewScore),0,100); }
 
@@ -471,7 +476,7 @@
       function stage(score){ return score<=25?1:score<=45?2:score<=60?3:score<=80?4:5; }
       function status(score){ return stageLabels[stage(score)-1]; }
       function stat(label,value,tone="purple"){ return `<div class="stat"><small class="hint">${label}</small><strong>${value}</strong></div>`; }
-      function characterHtml(compact=false,bubble=false){ const currentStage=stage(stats.bodyScore); const clothing=wardrobe.equipped!=="default"?`<span class="character-outfit ${wardrobe.equipped}"></span>`:""; return `<div class="character ${compact?"compact":""}" data-character data-stage="${currentStage}"><span class="badge">${status(stats.bodyScore)}</span>${bubble?'<span class="bubble">你超棒的，每一次选择，都是更好的自己。</span>':""}<img src="images/girl-stage-${currentStage}-transparent.png" data-base="images/girl-stage-${currentStage}-transparent.png" data-blink="images/girl-stage-${currentStage}-blink.png" data-wave="images/girl-stage-${currentStage}-wave.png" onerror="fallbackCharacterImage(this)" alt="${status(stats.bodyScore)}" />${clothing}</div>`; }
+      function characterHtml(compact=false,bubble=false){ const currentStage=stage(stats.bodyScore); const base=`images/girl-stage-${currentStage}-transparent.png`; const blink=`images/girl-stage-${currentStage}-blink.png`; const wave=`images/girl-stage-${currentStage}-wave.png`; const clothing=wardrobe.equipped!=="default"?`<span class="character-outfit ${wardrobe.equipped}"></span>`:""; return `<div class="character ${compact?"compact":""}" data-character data-stage="${currentStage}"><span class="badge">${status(stats.bodyScore)}</span>${bubble?'<span class="bubble">你超棒的，每一次选择，都是更好的自己。</span>':""}<img class="motion-frame motion-base" src="${base}" onerror="fallbackCharacterImage(this)" alt="${status(stats.bodyScore)}" /><img class="motion-frame motion-blink" src="${blink}" onerror="this.hidden=true" alt="" aria-hidden="true" /><img class="motion-frame motion-wave" src="${wave}" onerror="this.hidden=true" alt="" aria-hidden="true" />${clothing}</div>`; }
       function fallbackCharacterImage(image){ if(!image.dataset.fallback){ image.dataset.fallback="1"; image.src="images/girl-normal-transparent.png"; return; } const wrap=image.closest("[data-character]"); if(wrap) wrap.innerHTML='<div style="display:grid;min-height:inherit;place-items:center;padding:28px;color:#8a74aa;font-weight:800;text-align:center">角色图片未找到</div>'; }
       function estimate(sourceForm=form){
         const name=sourceForm.drinkName.trim().replace(/\s+/g,""); const hit=name?preset[name]:undefined; const base=hit||defaults[sourceForm.drinkType]; const toppings=sourceForm.toppings; const custom=sourceForm.customTopping.trim(); const hasCustom=Boolean(name&&!hit)||Boolean(custom);
@@ -519,7 +524,7 @@
       function syncPills(key){ const wrap=document.querySelector(`[data-group="${key}"]`); if(!wrap)return; wrap.innerHTML=options[key].map(value=>`<button type="button" class="pill ${key==="toppings"?form.toppings.includes(value)?"selected":"":form[key]===value?"selected":""}" data-pill="${key}" data-value="${value}" aria-pressed="${key==="toppings"?form.toppings.includes(value):form[key]===value}">${value}</button>`).join(""); }
       function showToast(message,tone="info"){ const toast=document.querySelector("#toast"); toast.className=`toast active ${tone}`; toast.replaceChildren(); const dot=document.createElement("span"); dot.className="toast-dot"; dot.setAttribute("aria-hidden","true"); const text=document.createElement("span"); text.className="toast-message"; text.textContent=message; const progress=document.createElement("span"); progress.className="toast-progress"; progress.setAttribute("aria-hidden","true"); toast.append(dot,text,progress); window.clearTimeout(showToast.timer); showToast.timer=window.setTimeout(()=>toast.className=`toast ${tone}`,1900); }
       function tapFeedback(kind="light"){ if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const pattern={light:12,success:[20,30,18],medium:22,warning:[18,25,34]}[kind]||12; navigator.vibrate?.(pattern); }
-      function startCharacterMotion(){ document.querySelectorAll("[data-character] img").forEach(image=>{ if(image.dataset.motionReady)return; image.dataset.motionReady="1"; window.setInterval(()=>{ if(image.dataset.fallback)return; const base=image.dataset.base; const blink=image.dataset.blink; const wave=image.dataset.wave; image.src=Math.random()>.65?wave:blink; window.setTimeout(()=>{ if(!image.dataset.fallback) image.src=base; },520); },3600+Math.random()*1200); }); }
+      function startCharacterMotion(){ document.querySelectorAll("[data-character]").forEach(character=>{ if(character.dataset.motionReady)return; character.dataset.motionReady="1"; if(previewMotion){ character.classList.add(previewMotion==="blink"?"is-blinking":"is-waving"); return; } const schedule=()=>{ window.setTimeout(()=>{ if(!character.isConnected)return; const wave=character.querySelector(".motion-wave:not([hidden])"); const blink=character.querySelector(".motion-blink:not([hidden])"); const useWave=Math.random()>.82&&wave; const frame=useWave?"is-waving":"is-blinking"; if(useWave||blink){ character.classList.add(frame); window.setTimeout(()=>character.classList.remove(frame),useWave?520:170); } schedule(); },3600+Math.random()*1200); }; schedule(); }); }
 
       Object.keys(options).forEach(syncPills);
       syncMode();
