@@ -87,6 +87,7 @@ assert.match(gitattributes, /^\.npmrc text eol=lf/m);
   "lib/storage.ts",
   "lib/types.ts",
   "lib/uiPreferences.ts",
+  "next.config.ts",
   "public/preview.html",
   "scripts/check-github-ready.mjs",
   "scripts/check-goal-status.mjs",
@@ -299,6 +300,9 @@ assert.match(modeCard, /selected-pop/);
 assert.match(modeCard, /已选/);
 
 const preview = file("public/preview.html");
+const nextConfig = file("next.config.ts");
+assert.match(nextConfig, /source:\s*["']\/["']/);
+assert.match(nextConfig, /destination:\s*["']\/preview\.html["']/);
 assert.match(preview, /\.view \{ display: none/);
 assert.match(preview, /\.view\.active \{ display: grid/);
 assert.match(preview, /\.stack \{ gap: 18px/);
@@ -312,7 +316,8 @@ assert.doesNotMatch(preview, /blink-eye/);
 assert.doesNotMatch(preview, /wave-hand/);
 assert.match(preview, /estimateSmart/);
 assert.match(preview, /AI_ENDPOINTS/);
-assert.match(preview, /127\.0\.0\.1:4173\/api\/estimate-drink/);
+assert.match(preview, /AI_ENDPOINTS\s*=\s*\[["']\/api\/estimate-drink["']\]/);
+assert.doesNotMatch(preview, /127\.0\.0\.1:4173\/api\/estimate-drink/);
 assert.match(preview, /estimate-status/);
 assert.match(preview, /status-dot/);
 assert.match(preview, /status-pulse/);
@@ -322,7 +327,7 @@ assert.match(preview, /toast-progress/);
 assert.match(preview, /showToast\(message,tone="info"\)/);
 assert.match(preview, /showToast\("本地保存暂时失败，请检查浏览器存储权限","warning"\)/);
 assert.match(preview, /AI已连接/);
-assert.match(preview, /本地临时值/);
+assert.match(preview, /暂时使用本地估算/);
 assert.match(preview, /data-estimate-field="\$\{key\}"/);
 assert.match(preview, /field\("price","价格"/);
 assert.match(preview, /field\("calories","热量"/);

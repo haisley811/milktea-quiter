@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>今天不喝 - 本地预览</title>
+    <title>今天不喝</title>
     <style>
       :root {
         --text: #4c3575;
@@ -410,7 +410,7 @@
         {id:"office-chic",name:"珍珠通勤",price:400,accent:"#f3f4f6",asset:"images/outfits/office-chic.png"},{id:"idol-silver",name:"银曜偶像",price:450,accent:"#e0e7ff",asset:"images/outfits/idol-silver.png"},
         {id:"winter-coat",name:"冰蓝暖冬",price:500,accent:"#dbeafe",asset:"images/outfits/winter-coat.png"}
       ];
-      const AI_ENDPOINTS = ["http://127.0.0.1:4173/api/estimate-drink"];
+      const AI_ENDPOINTS = ["/api/estimate-drink"];
       const UI_THEMES = [
         { key:"soft", label:"软糖奶茶", desc:"粉紫薄荷与柔和玻璃感。" },
         { key:"mono", label:"黑白极简", desc:"黑白灰、高留白、细边框。" },
@@ -499,7 +499,7 @@
       function editableEstimateHtml(data, baseData=data, impactText){
         const manual=form.manualEstimate||{}; const hasManual=manual.price!==undefined||manual.calories!==undefined||manual.sugarGram!==undefined;
         const statusClass=baseData.source==="AI智能估算"?"connected":baseData.source==="AI智能分析中"?"checking":"local";
-        const statusText=baseData.source==="AI智能估算"?"AI已连接，已使用模型估算":baseData.source==="AI智能分析中"?"正在连接本机 AI 后端":"本地临时值，启动预览服务后会自动尝试 AI";
+        const statusText=baseData.source==="AI智能估算"?"AI已连接，已使用模型估算":baseData.source==="AI智能分析中"?"正在连接 AI 估算服务":"暂时使用本地估算，AI 服务恢复后会自动重试";
         const field=(key,label,unit,step)=>`<label class="estimate-field ${manual[key]!==undefined?"edited":""}" data-estimate-shell="${key}"><small>${label}${manual[key]!==undefined?'<span class="edited-tag">已改</span>':""}</small><span class="estimate-input-wrap">${unit?`<b>${unit}</b>`:""}<input data-estimate-field="${key}" type="number" min="0" step="${step}" inputmode="decimal" value="${data[key]}" aria-label="${label}，可手动修改" /></span></label>`;
         return `<div class="estimate-head"><strong>实时估算</strong><span class="estimate-meta"><span class="estimate-chip">${baseData.source} · 可信度${baseData.confidence}</span><button class="estimate-reset ${hasManual?"":"hidden"}" data-reset-estimate type="button">恢复建议值</button></span></div><div class="estimate-grid estimate-fields">${field("price","价格","¥","0.1")}${field("calories","热量","","1")}${field("sugarGram","糖分 g","","1")}</div><div class="estimate-impact">${impactText}</div><div class="estimate-status ${statusClass}"><span class="status-dot ${statusClass==="checking"?"status-pulse":""}"></span>${statusText}</div><div class="manual-status ${hasManual?"":"hidden"}">已应用手动值，提交会按你编辑的数字保存。</div><p class="hint" style="text-align:center;margin-top:8px">${data.explanation} 数据为估算值，仅供参考；可直接修改上方数字。</p>`;
       }
