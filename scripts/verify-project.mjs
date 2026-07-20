@@ -24,7 +24,7 @@ function assertCleanText(path) {
 const requiredThemeLabels = ["软糖奶茶", "黑白极简", "液态玻璃", "千禧甜心", "新粗野", "霓虹赛博"];
 
 const packageJson = JSON.parse(file("package.json"));
-assert.equal(packageJson.dependencies.next, "15.3.3");
+assert.equal(packageJson.dependencies.next, "15.5.20");
 assert.equal(packageJson.dependencies.react, "19.0.0");
 assert.equal(packageJson.scripts["check:github-ready"], "node scripts/check-github-ready.mjs");
 assert.equal(packageJson.scripts["check:goal-status"], "node scripts/check-goal-status.mjs");
@@ -82,7 +82,7 @@ assert.match(gitattributes, /^\.npmrc text eol=lf/m);
   "lib/haptics.ts",
   "lib/aiEstimate.ts",
   "lib/qwenEstimateRuntime.mjs",
-  "lib/qwenEstimateRuntime.d.ts",
+  "lib/qwenEstimateRuntime.d.mts",
   "lib/stats.ts",
   "lib/storage.ts",
   "lib/types.ts",

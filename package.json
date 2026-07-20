@@ -37,7 +37,7 @@
     "verify": "npm run verify:core && npm run verify:project && npm run verify:preview-ui && npm run verify:ui-preferences && npm run verify:wechat-template && npm run smoke:wechat-template && npm run verify:responsive && npm run verify:deploy"
   },
   "dependencies": {
-    "next": "15.3.3",
+    "next": "15.5.20",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
@@ -45,7 +45,7 @@
     "@tailwindcss/postcss": "4.1.8",
     "@types/node": "22.15.29",
     "@types/react": "19.0.14",
-    "@types/react-dom": "19.0.0",
+    "@types/react-dom": "19.0.6",
     "tailwindcss": "4.1.8",
     "typescript": "5.8.3"
   }

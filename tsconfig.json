@@ -24,5 +24,19 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    ".edge-*",
+    ".npm-cache",
+    "01-core",
+    "02a-docs",
+    "02b-character-images-1",
+    "02c-character-images-2",
+    "02d-outfits-and-preview",
+    "03-tools-and-templates",
+    "figma-import",
+    "github-web-upload-batches",
+    "shots",
+    "templates"
+  ]
 }
