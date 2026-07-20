@@ -57,20 +57,20 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
   return (
     <div className="relative">
       {withBubble ? (
-        <div className="absolute right-2 top-2 z-10 max-w-[152px] rounded-[22px] border border-white/80 bg-white/90 px-4 py-3 text-xs font-semibold leading-relaxed text-[#6D5A8C] shadow-[0_12px_26px_rgba(76,53,117,0.12)]">
+        <div className="absolute bottom-3 right-3 z-20 max-w-[166px] rounded-[18px] border border-white/80 bg-white/92 px-3 py-2.5 text-xs font-semibold leading-relaxed text-[#5F4A7E] shadow-[0_10px_24px_rgba(76,53,117,0.1)]">
           你超棒的！每一次选择，都是更好的自己。
         </div>
       ) : null}
       <div
         data-character-stage={stageMeta.stage}
         data-outfit={outfitId}
-        className={`relative overflow-hidden rounded-[32px] border border-white/80 bg-gradient-to-br ${stageMeta.tint} shadow-[0_18px_44px_rgba(76,53,117,0.14)] ${
-          compact ? "min-h-[190px]" : "min-h-[300px]"
+        className={`relative overflow-hidden rounded-[26px] border border-white/80 bg-gradient-to-br ${stageMeta.tint} shadow-[0_14px_36px_rgba(76,53,117,0.11)] ${
+          compact ? "min-h-[158px]" : "min-h-[290px]"
         }`}
       >
-        <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between gap-3 rounded-[22px] border border-white/80 bg-white/78 px-3 py-2 text-xs font-bold text-[#4C3575] shadow-[0_10px_24px_rgba(76,53,117,0.1)] backdrop-blur-xl">
+        <div className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full border border-white/80 bg-white/82 px-3 py-1.5 text-xs font-bold text-[#4C3575] shadow-[0_8px_20px_rgba(76,53,117,0.08)] backdrop-blur-xl">
           <span className="min-w-0 truncate">{stageMeta.label}</span>
-          <span className="shrink-0 rounded-full bg-[#F3E8FF] px-2 py-0.5 text-[10px] font-black text-[#7C5BD6]">S{stageMeta.stage}</span>
+          <span className="shrink-0 text-[10px] font-black text-[#6D4FC2]">S{stageMeta.stage}</span>
         </div>
         {missing ? (
           <div className="flex min-h-[inherit] items-center justify-center px-8 text-center text-sm font-semibold text-[#8A74AA]">
@@ -114,9 +114,7 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
             </div>
           </div>
         )}
-        <div className="absolute inset-x-4 bottom-4 z-10 rounded-[22px] border border-white/75 bg-white/72 px-3 py-2 text-xs font-semibold leading-snug text-[#6D5A8C] shadow-[0_10px_24px_rgba(76,53,117,0.1)] backdrop-blur-xl">
-          {stageMeta.status}
-        </div>
+        {!compact && !withBubble ? <div className="absolute inset-x-4 bottom-4 z-10 rounded-[18px] border border-white/75 bg-white/78 px-3 py-2 text-xs font-semibold leading-snug text-[#5F4A7E] shadow-[0_8px_20px_rgba(76,53,117,0.08)] backdrop-blur-xl">{stageMeta.status}</div> : null}
       </div>
     </div>
   );

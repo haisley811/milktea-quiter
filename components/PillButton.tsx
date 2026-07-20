@@ -23,7 +23,7 @@ export function PillButton<T extends string>({
       type="button"
       onClick={() => onClick(label)}
       aria-pressed={selected}
-      className={`soft-focus inline-flex min-h-10 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
+      className={`soft-focus inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-2.5 text-sm font-semibold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
         selected
           ? `${selectedClass[tone]} selected-pop`
           : "border-[#E7D8FF] bg-white/70 text-[#6D5A8C] hover:bg-white"

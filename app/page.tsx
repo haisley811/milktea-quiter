@@ -283,12 +283,13 @@ export default function AppPage() {
 
   return (
     <main
-      className="app-root min-h-screen px-3 py-4 text-[#4C3575]"
+      className="app-root min-h-[100svh] px-3 py-4 text-[#4C3575]"
       data-ui-theme={uiPreferences.theme}
       data-character-visibility={uiPreferences.showCharacter ? "shown" : "hidden"}
     >
-      <section className="app-frame mx-auto min-h-[calc(100vh-32px)] max-w-[430px] overflow-hidden rounded-[38px] border border-white/80 bg-[#F8F4FF]/70 shadow-[0_24px_80px_rgba(76,53,117,0.16)] backdrop-blur-xl">
-        <div className="flex items-center justify-between px-6 pt-4 text-xs font-bold text-[#806A9F]">
+      <a className="skip-link" href="#app-content">跳到主要内容</a>
+      <section className="app-frame mx-auto min-h-[calc(100svh-32px)] max-w-[430px] overflow-hidden rounded-[38px] border border-white/80 bg-[#F8F4FF]/70 shadow-[0_24px_80px_rgba(76,53,117,0.16)] backdrop-blur-xl">
+        <div className="app-status flex items-center justify-between px-6 pt-4 text-xs font-bold text-[#6F5B8F]">
           <span>9:41</span>
           <span>今天不喝</span>
           <span>100%</span>
@@ -298,7 +299,7 @@ export default function AppPage() {
             <span className="view-switch-bar block h-full rounded-full" />
           </div>
         ) : null}
-        <div key={isReady ? activeView : "loading"} className="screen-enter px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4">
+        <div id="app-content" key={isReady ? activeView : "loading"} className="app-content screen-enter px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4">
           {isReady ? view : <LoadingView />}
         </div>
       </section>

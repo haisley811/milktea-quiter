@@ -15,7 +15,7 @@ export function WardrobeShop({ stats, wardrobe, onPurchase, onEquip }: WardrobeS
   const total = earnedCoins(stats.records);
 
   return (
-    <section className="glass-card rounded-[30px] p-5" aria-label="服装商店">
+    <section className="glass-card rounded-[26px] p-5" aria-label="服装商店">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-bold text-[#8A74AA]">角色衣橱</p>
@@ -35,16 +35,16 @@ export function WardrobeShop({ stats, wardrobe, onPurchase, onEquip }: WardrobeS
           return (
             <article key={outfit.id} className={`wardrobe-card wardrobe-card-${outfit.id} rounded-[22px] border p-3 ${equipped ? "border-[#A78BFA] ring-2 ring-[#E9D5FF]" : "border-white/80"}`}>
               <div className={`wardrobe-preview relative h-20 overflow-hidden rounded-[16px] bg-gradient-to-br ${outfit.accent}`} aria-hidden="true">
-                {outfit.previewPath ? <img src={outfit.previewPath} alt="" className="h-full w-full object-contain" /> : <span className={`wardrobe-mini wardrobe-${outfit.id}`} />}
+                {outfit.previewPath ? <img src={outfit.previewPath} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" /> : <span className={`wardrobe-mini wardrobe-${outfit.id}`} />}
               </div>
               <p className="mt-2 truncate text-sm font-black text-[#4C3575]">{outfit.name}</p>
               <p className="mt-1 h-8 text-[10px] font-semibold leading-snug text-[#8A74AA]">{outfit.description}</p>
               {owned ? (
-                <button type="button" className={`mt-2 w-full rounded-[14px] px-2 py-2 text-xs font-black ${equipped ? "bg-[#EDE9FE] text-[#6D28D9]" : "bg-[#4C3575] text-white"}`} onClick={() => onEquip(outfit.id)} aria-pressed={equipped}>
+                <button type="button" className={`mt-2 min-h-11 w-full rounded-[14px] px-2 py-2 text-xs font-black ${equipped ? "bg-[#EDE9FE] text-[#6D28D9]" : "bg-[#4C3575] text-white"}`} onClick={() => onEquip(outfit.id)} aria-pressed={equipped}>
                   {equipped ? "已穿上" : "换上"}
                 </button>
               ) : (
-                <button type="button" className="mt-2 w-full rounded-[14px] bg-amber-100 px-2 py-2 text-xs font-black text-amber-800 disabled:cursor-not-allowed disabled:opacity-45" onClick={() => onPurchase(outfit.id)} disabled={!canBuy}>
+                <button type="button" className="mt-2 min-h-11 w-full rounded-[14px] bg-amber-100 px-2 py-2 text-xs font-black text-amber-800 disabled:cursor-not-allowed disabled:opacity-45" onClick={() => onPurchase(outfit.id)} disabled={!canBuy}>
                   {outfit.price} 金币
                 </button>
               )}
@@ -52,7 +52,7 @@ export function WardrobeShop({ stats, wardrobe, onPurchase, onEquip }: WardrobeS
           );
         })}
       </div>
-      <p className="mt-3 text-[11px] font-semibold text-[#8A74AA]">当前穿着：{findOutfit(wardrobe.equippedOutfitId).name}。服装会随角色阶段等比调整，不改变 Body Score 的真实形态。</p>
+      <p className="mt-3 text-xs font-semibold leading-relaxed text-[#6F5B8F]">当前穿着：{findOutfit(wardrobe.equippedOutfitId).name}。每套服饰都配有五个完整体型版本，不改变 Body Score 的真实阶段。</p>
     </section>
   );
 }

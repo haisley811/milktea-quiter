@@ -87,7 +87,7 @@ for (const theme of requiredThemes.filter((theme) => theme !== "soft")) {
 const themedSurfaceFiles = {
   "components/BodyScoreMeter.tsx": ["glass-card", "bg-gradient-to-r", "Body Score"],
   "components/BottomNav.tsx": ["<nav", "aria-current", "selected-pop"],
-  "components/CharacterDisplay.tsx": ["bg-white/90", "backdrop-blur-xl", "stageMeta"],
+  "components/CharacterDisplay.tsx": ["bg-white/92", "backdrop-blur-xl", "stageMeta"],
   "components/PillButton.tsx": ["aria-pressed={selected}", "selected-pop"],
   "components/ModeCard.tsx": ["aria-pressed={active}", "selected-pop"],
   "components/FormRow.tsx": ["hover:border-white", "hover:bg-white"],

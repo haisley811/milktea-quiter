@@ -24,18 +24,21 @@ export function DataView({ stats, showCharacter, outfitId, onDeleteRecord, onRes
   const stage = getCharacterStageMeta(stats.bodyScore);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <header>
-        <p className="text-sm font-bold text-[#8A74AA]">每一天的选择，都在让你更好</p>
-        <h1 className="mt-1 text-3xl font-black text-[#4C3575]">我的数据</h1>
+        <p className="text-[13px] font-bold text-[#6F5B8F]">每一天的选择，都在让你更好</p>
+        <h1 className="mt-1 text-[30px] font-black leading-none text-[#4C3575]">我的数据</h1>
       </header>
 
-      {showCharacter ? <CharacterDisplay bodyScore={stats.bodyScore} outfitId={outfitId} compact /> : null}
-
-      <section className="glass-card rounded-[30px] p-5">
-        <p className="text-sm font-bold text-[#8A74AA]">连续打卡</p>
-        <p className="mt-1 text-5xl font-black text-[#4C3575]">{stats.streakDays} 天</p>
+      <section className="glass-card flex items-end justify-between gap-4 rounded-[24px] border-l-4 border-l-[#70D5C8] p-5">
+        <div>
+          <p className="text-[13px] font-bold text-[#6F5B8F]">连续打卡</p>
+          <p className="mt-1 text-[42px] font-black leading-none text-[#4C3575]">{stats.streakDays} 天</p>
+        </div>
+        <span className="rounded-full bg-[#DDF8F5] px-3 py-1 text-xs font-black text-[#226962]">{stage.label}</span>
       </section>
+
+      {showCharacter ? <CharacterDisplay bodyScore={stats.bodyScore} outfitId={outfitId} compact /> : null}
 
       <section className="glass-card rounded-[30px] p-5">
         <div className="mb-4 flex items-start justify-between gap-3">
@@ -69,7 +72,7 @@ export function DataView({ stats, showCharacter, outfitId, onDeleteRecord, onRes
         ) : null}
       </section>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="ui-stagger grid grid-cols-2 gap-3">
         {showCharacter ? <StatCard label="当前状态" value={stage.label} tone="mint" /> : null}
         {showCharacter ? <StatCard label="Body Score" value={`${stats.bodyScore}`} tone="purple" /> : null}
         <StatCard label="已记录天数" value={`${stats.streakDays}`} tone="pink" />

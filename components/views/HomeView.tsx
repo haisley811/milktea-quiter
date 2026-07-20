@@ -19,11 +19,11 @@ export function HomeView({ stats, showCharacter, outfitId, onStartRecord }: Home
   const todayTone = todaySummary.netMoney >= 0 ? "from-[#DDF8F5] to-[#F3E8FF]" : "from-[#FFF0F7] to-[#FFF4DD]";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <header>
-        <p className="text-sm font-bold text-[#8A74AA]">和奶茶说拜拜的第 {Math.max(stats.streakDays, 1)} 天</p>
+        <p className="text-[13px] font-bold text-[#6F5B8F]">和奶茶说拜拜的第 {Math.max(stats.streakDays, 1)} 天</p>
         <div className="mt-1 flex items-end justify-between gap-3">
-          <h1 className="text-4xl font-black tracking-normal text-[#4C3575]">今天不喝</h1>
+          <h1 className="text-[34px] font-black leading-none tracking-normal text-[#4C3575]">今天不喝</h1>
           {showCharacter ? (
             <span className="mb-1 shrink-0 rounded-full bg-white/75 px-3 py-1 text-xs font-black text-[#6D5A8C] shadow-[0_8px_20px_rgba(76,53,117,0.08)]">
               轻盈度 {lightness}%
@@ -34,15 +34,8 @@ export function HomeView({ stats, showCharacter, outfitId, onStartRecord }: Home
 
       {showCharacter ? <CharacterDisplay bodyScore={stats.bodyScore} outfitId={outfitId} withBubble /> : null}
 
-      <div className="grid grid-cols-2 gap-3">
-        <StatCard label="累计省钱" value={`¥${stats.totalSavedMoney}`} hint={`净钱包 ¥${stats.netMoney}`} tone="mint" />
-        <StatCard label="累计减少热量" value={`${stats.totalReducedCalories}`} hint="kcal" tone="purple" />
-        <StatCard label="累计减少糖分" value={`${stats.totalReducedSugar}g`} hint="少一点也很棒" tone="pink" />
-        {showCharacter ? <StatCard label="Body Score" value={`${stats.bodyScore}`} hint={stage.label} tone="amber" /> : null}
-      </div>
-
-      <div className="glass-card rounded-[30px] p-4">
-        <div className={`mb-3 rounded-[24px] bg-gradient-to-r ${todayTone} px-4 py-3`} aria-live="polite">
+      <section className="glass-card rounded-[26px] p-4">
+        <div className={`border-b border-[#E7D8FF]/70 bg-gradient-to-r ${todayTone} px-1 pb-3`} aria-live="polite">
           <div className="flex min-w-0 items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-sm font-black text-[#4C3575]">
@@ -54,27 +47,27 @@ export function HomeView({ stats, showCharacter, outfitId, onStartRecord }: Home
                   : "选一个按钮开始，记录会保存在本地。"}
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-white/70 px-3 py-1 text-xs font-black text-[#6D5A8C]">
+            <span className="shrink-0 rounded-full bg-white/82 px-3 py-1 text-xs font-black text-[#5F4A7E]">
               {todaySummary.total ? `${todaySummary.netMoney >= 0 ? "+" : ""}¥${todaySummary.netMoney}` : "待打卡"}
             </span>
           </div>
         </div>
-        <div className="mb-4 rounded-[24px] bg-gradient-to-r from-[#F3E8FF] to-[#DDF8F5] px-4 py-3">
+        <div className="px-1 py-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-sm font-black text-[#4C3575]">连续 {stats.streakDays} 天记录</p>
-              <p className="mt-1 text-xs font-semibold text-[#7D679D]">每次选择都有被认真看见。</p>
+              <p className="mt-1 text-xs font-semibold text-[#6F5B8F]">每次选择都有被认真看见。</p>
             </div>
             <span className="shrink-0 rounded-full bg-white/70 px-3 py-1 text-xs font-black text-[#6D5A8C]">
               {showCharacter ? stage.label : "本地"}
             </span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-[1.15fr_.85fr] gap-3">
           <button
             type="button"
             onClick={() => onStartRecord("saved")}
-            className="soft-focus rounded-[26px] bg-gradient-to-br from-[#8EDDD3] to-[#A7F1E6] px-4 py-4 text-left text-[#226962] shadow-[0_14px_30px_rgba(142,221,211,0.28)] transition duration-200 hover:-translate-y-1 active:scale-95"
+            className="action-saved soft-focus min-h-[72px] rounded-[22px] bg-gradient-to-br from-[#70D5C8] to-[#B8F1E8] px-4 py-4 text-left text-[#164E4A] shadow-[0_12px_26px_rgba(70,180,168,0.22)] transition duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
           >
             <span className="block text-xs font-bold opacity-80">虚拟下单</span>
             <span className="mt-1 block text-xl font-black">今天戒了</span>
@@ -82,12 +75,19 @@ export function HomeView({ stats, showCharacter, outfitId, onStartRecord }: Home
           <button
             type="button"
             onClick={() => onStartRecord("consumed")}
-            className="soft-focus rounded-[26px] bg-gradient-to-br from-[#F8BBD9] to-[#FFD4B8] px-4 py-4 text-left text-[#7F3B67] shadow-[0_14px_30px_rgba(248,187,217,0.26)] transition duration-200 hover:-translate-y-1 active:scale-95"
+            className="action-consumed soft-focus min-h-[72px] rounded-[22px] bg-gradient-to-br from-[#F8C2DA] to-[#FFE0C6] px-4 py-4 text-left text-[#71304F] shadow-[0_10px_24px_rgba(220,132,171,0.18)] transition duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
           >
             <span className="block text-xs font-bold opacity-80">温柔记录</span>
             <span className="mt-1 block text-xl font-black">今天喝了</span>
           </button>
         </div>
+      </section>
+
+      <div className="ui-stagger grid grid-cols-2 gap-3">
+        <StatCard label="累计省钱" value={`¥${stats.totalSavedMoney}`} hint={`净钱包 ¥${stats.netMoney}`} tone="mint" />
+        <StatCard label="累计减少热量" value={`${stats.totalReducedCalories}`} hint="kcal" tone="purple" />
+        <StatCard label="累计减少糖分" value={`${stats.totalReducedSugar}g`} hint="少一点也很棒" tone="pink" />
+        {showCharacter ? <StatCard label="Body Score" value={`${stats.bodyScore}`} hint={stage.label} tone="amber" /> : null}
       </div>
     </div>
   );

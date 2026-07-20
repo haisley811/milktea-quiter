@@ -7,9 +7,9 @@
     <style>
       :root {
         --text: #4c3575;
-        --muted: #8a74aa;
+        --muted: #6f5b8f;
         --line: #e7d8ff;
-        --purple: #a78bfa;
+        --purple: #7c5bd6;
         --mint: #8eddd3;
         --pink: #f8bbd9;
         --honey: #ffbf8a;
@@ -36,6 +36,7 @@
         touch-action: manipulation;
         user-select: none;
       }
+      button:focus-visible, input:focus-visible { outline:3px solid rgba(5,150,105,.72); outline-offset:3px; }
       button::after {
         content: "";
         position: absolute;
@@ -54,21 +55,22 @@
       button[aria-busy="true"] { cursor: progress; }
       button.submit-busy::before { content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.34) 42%,transparent 72%); opacity:.78; pointer-events:none; transform:translateX(-120%); animation:submit-sheen 1.15s ease-in-out infinite; }
       h1, h2, p { margin: 0; letter-spacing: 0; }
-      h1 { font-size: 38px; line-height: 1.05; }
-      h2 { font-size: 26px; line-height: 1.14; }
+      h1 { font-size: 34px; line-height: 1.02; }
+      h2 { font-size: 28px; line-height: 1.08; }
       input {
         width: 100%;
         border: 1px solid var(--line);
-        border-radius: 22px;
-        background: rgba(255,255,255,.82);
+        min-height: 48px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.86);
         color: var(--text);
         padding: 13px 16px;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 760;
         outline: none;
         transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
       }
-      input:focus { border-color: var(--purple); background: #fff; box-shadow: 0 0 0 4px rgba(167,139,250,.18); }
+      input:focus { border-color: var(--purple); background: #fff; box-shadow: 0 0 0 4px rgba(124,91,214,.16); }
       .phone {
         width: min(100% - 24px, 430px);
         max-width: calc(100vw - 24px);
@@ -76,40 +78,40 @@
         margin: 16px auto;
         overflow: hidden;
         border: 1px solid rgba(255,255,255,.84);
-        border-radius: 38px;
+        border-radius: 34px;
         background: rgba(248,244,255,.72);
-        box-shadow: 0 24px 80px rgba(76,53,117,.16);
+        box-shadow: 0 22px 72px rgba(76,53,117,.14);
         backdrop-filter: blur(18px);
       }
-      .status { display:flex; justify-content:space-between; padding:16px 24px 0; color:#806a9f; font-size:12px; font-weight:850; }
+      .status { display:flex; justify-content:space-between; padding:16px 20px 0; color:#6f5b8f; font-size:12px; font-weight:850; }
       main { min-width:0; padding: 18px 20px calc(7rem + var(--safe-bottom)); }
-      .view { display: none; animation: screen-enter 240ms ease both; }
+      .view { display: none; animation: screen-enter 260ms cubic-bezier(.22,1,.36,1) both; }
       .view.active { display: grid; }
       .view, .glass, .character, .today-panel { min-width:0; max-width:100%; }
-      .stack { gap: 18px; }
+      .stack { gap: 16px; }
       .glass.stack { display: grid; }
       .eyebrow { color: var(--muted); font-size: 13px; font-weight: 850; }
-      .hint { color: #8f7aac; font-size: 12px; font-weight: 760; line-height: 1.45; }
+      .hint { color: var(--muted); font-size: 12px; font-weight: 760; line-height: 1.45; }
       .glass {
         border: 1px solid rgba(255,255,255,.84);
-        border-radius: 30px;
-        background: rgba(255,255,255,.7);
-        box-shadow: 0 14px 34px rgba(111,82,153,.12);
+        border-radius: 26px;
+        background: rgba(255,255,255,.86);
+        box-shadow: 0 12px 30px rgba(111,82,153,.1);
         backdrop-filter: blur(14px);
       }
       .character {
         position: relative;
-        min-height: 310px;
+        min-height: 292px;
         overflow: hidden;
         border: 1px solid rgba(255,255,255,.84);
-        border-radius: 32px;
+        border-radius: 26px;
         background:
           radial-gradient(circle at 18% 14%, rgba(142,221,211,.35), transparent 9rem),
           radial-gradient(circle at 84% 74%, rgba(248,187,217,.28), transparent 10rem),
           linear-gradient(135deg, #ddf8f5, #fff 44%, #f3e8ff);
-        box-shadow: 0 18px 44px rgba(76,53,117,.14);
+        box-shadow: 0 14px 36px rgba(76,53,117,.11);
       }
-      .character.compact { min-height: 190px; }
+      .character.compact { min-height: 158px; }
       .character .badge, .bubble {
         position: absolute;
         z-index: 10;
@@ -120,20 +122,28 @@
         font-weight: 900;
         backdrop-filter: blur(10px);
       }
-      .character .badge { left: 16px; top: 16px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: 999px; padding: 8px 11px; }
-      .bubble { right: 18px; bottom: 18px; max-width: 176px; border-radius: 22px; padding: 12px; line-height: 1.35; }
+      .character .badge { left: 16px; top: 16px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: 999px; padding: 7px 11px; }
+      .bubble { right: 14px; bottom: 14px; max-width: 172px; border-radius: 18px; padding: 10px 12px; line-height: 1.35; }
       .character-canvas-anchor { position:absolute; left:50%; bottom:0; width:auto; height:94%; aspect-ratio:2/3; transform:translateX(-50%); }
       .character.compact .character-canvas-anchor { height:100%; }
-      .character-canvas { position:relative; width:100%; height:100%; animation:floaty 4.5s ease-in-out infinite; }
+      .character-canvas { position:relative; width:100%; height:100%; animation:floaty 5.2s ease-in-out infinite; }
       .character .motion-frame { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center bottom; opacity:0; pointer-events:none; will-change:opacity; }
       .character .motion-base { opacity:1; }
       .character.is-blinking .motion-base, .character.is-waving .motion-base { opacity:0; }
       .character.is-blinking .motion-blink, .character.is-waving .motion-wave { opacity:1; }
       .stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-      .stat { min-width:0; border-radius:24px; padding:14px; background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.84); }
-      .stat strong { display:block; color:var(--text); font-size:20px; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-      .today-panel { border-radius:24px; padding:14px; background:linear-gradient(90deg,#ddf8f5,#f3e8ff); }
-      .today-panel.consumed { background:linear-gradient(90deg,#fff0f7,#fff4dd); }
+      .stat { position:relative; min-width:0; min-height:100px; overflow:hidden; border-radius:22px; padding:16px 14px 12px; background:rgba(255,255,255,.76); border:1px solid rgba(231,216,255,.9); box-shadow:0 9px 22px rgba(76,53,117,.06); animation:content-rise 320ms cubic-bezier(.22,1,.36,1) both; }
+      .stat::before { content:""; position:absolute; left:14px; top:10px; width:32px; height:4px; border-radius:999px; background:linear-gradient(90deg,#7c5bd6,#f8bbd9); }
+      .stat.tone-mint::before { background:linear-gradient(90deg,#55bfb2,#8eddd3); }
+      .stat.tone-pink::before { background:linear-gradient(90deg,#df7da8,#f8bbd9); }
+      .stat.tone-amber::before { background:linear-gradient(90deg,#eaa35f,#ffcf9f); }
+      .stat:nth-child(2){animation-delay:45ms}.stat:nth-child(3){animation-delay:90ms}.stat:nth-child(4){animation-delay:135ms}.stat:nth-child(n+5){animation-delay:170ms}
+      .stat .hint { display:block; margin-top:6px; }
+      .stat strong { display:block; color:var(--text); font-size:21px; line-height:1.15; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .home-focus { padding:16px; }
+      .today-panel { padding:2px 2px 13px; border-bottom:1px solid rgba(231,216,255,.78); background:transparent; }
+      .today-panel.consumed { background:transparent; }
+      .streak-panel { padding:13px 2px; }
       .today-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
       .today-badge, .pill, .estimate-chip {
         flex-shrink: 0;
@@ -144,24 +154,26 @@
         font-size: 12px;
         font-weight: 950;
       }
-      .actions, .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .actions { display:grid; grid-template-columns:1.15fr .85fr; gap:12px; }
+      .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
       .primary, .secondary, .danger, .mode, .delete-btn, .estimate-reset {
         border: 0;
-        border-radius: 24px;
+        min-height: 48px;
+        border-radius: 22px;
         padding: 14px 16px;
         text-align: left;
         color: var(--text);
         font-weight: 950;
         transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
       }
-      .primary { color:#fff; background:linear-gradient(90deg,#8eddd3,#a78bfa); box-shadow:0 16px 36px rgba(167,139,250,.24); }
-      .secondary { background:linear-gradient(90deg,#fff0f7,#fff4dd); color:#7f3b67; }
+      .primary { color:#164e4a; background:linear-gradient(135deg,#70d5c8,#b8f1e8); box-shadow:0 12px 26px rgba(70,180,168,.22); }
+      .secondary { background:linear-gradient(135deg,#f8c2da,#ffe0c6); color:#71304f; box-shadow:0 10px 24px rgba(220,132,171,.16); }
       .danger { width:100%; color:#8d4970; border:1px solid #ffd1dd; background:#fff0f7; text-align:center; }
-      .mode { border:1px solid var(--line); background:rgba(255,255,255,.7); }
+      .mode { min-height:84px; border:1px solid var(--line); background:rgba(255,255,255,.78); }
       .mode.selected, .pill.selected { animation:selected-pop 260ms ease both; }
       .mode.selected { border-color:var(--mint); background:#ddf8f5; box-shadow:0 14px 28px rgba(142,221,211,.2); }
-      button:hover { transform: translateY(-2px); }
-      button:active { transform: scale(.96); }
+      @media (hover:hover) { button:hover { transform: translateY(-2px); } }
+      button:active { transform: scale(.98); }
       .field {
         display:grid;
         gap:8px;
@@ -173,9 +185,9 @@
       .field:hover { border-color:rgba(255,255,255,.72); background:rgba(255,255,255,.45); }
       .field:focus-within { border-color:rgba(167,139,250,.42); background:rgba(255,255,255,.6); }
       .label { display:flex; align-items:center; gap:8px; color:var(--text); font-size:14px; font-weight:950; }
-      .label::before { content:""; width:7px; height:7px; border-radius:999px; background:var(--purple); box-shadow:0 0 0 4px rgba(167,139,250,.14); }
+      .label::before { content:""; width:8px; height:8px; border-radius:999px; background:var(--purple); box-shadow:0 0 0 4px rgba(124,91,214,.12); }
       .pills { display:flex; flex-wrap:wrap; gap:8px; }
-      .pill { border:1px solid var(--line); background:rgba(255,255,255,.72); }
+      .pill { min-height:44px; display:inline-flex; align-items:center; border:1px solid var(--line); background:rgba(255,255,255,.78); padding:10px 14px; font-size:13px; }
       .pill.selected { border-color:var(--purple); background:#f3e8ff; }
       .estimate-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
       .estimate-meta { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
@@ -228,10 +240,12 @@
       .history-heading, .record-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
       .delete-btn { padding:7px 10px; border:1px solid #ffd1dd; background:#fff0f7; color:#8d4970; font-size:12px; }
       .account-card { display:flex; gap:14px; align-items:center; padding:18px; }
-      .avatar { width:64px; height:64px; flex-shrink:0; display:grid; place-items:center; border-radius:24px; background:linear-gradient(135deg,#f3e8ff,#ddf8f5); color:#7c5bd6; font-size:24px; font-weight:950; }
+      .avatar { width:56px; height:56px; flex-shrink:0; display:grid; place-items:center; border-radius:20px; background:linear-gradient(135deg,#f3e8ff,#ddf8f5); color:#6d4fc2; font-size:20px; font-weight:950; }
+      .account-heading { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+      .account-badge { border-radius:999px; background:#ddf8f5; color:#226962; padding:5px 9px; font-size:11px; font-weight:950; }
       .theme-controls { display:grid; gap:12px; }
       .theme-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-      .theme-option { min-height:82px; border:1px solid var(--line); border-radius:22px; background:rgba(255,255,255,.72); padding:12px; text-align:left; color:var(--text); }
+      .theme-option { min-height:92px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.76); padding:12px; text-align:left; color:var(--text); }
       .theme-option.selected { border-color:var(--purple); background:#f3e8ff; animation:selected-pop 260ms ease both; }
       .theme-option strong { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; }
       .theme-option small { display:block; margin-top:5px; color:var(--muted); font-weight:760; line-height:1.35; }
@@ -242,14 +256,14 @@
       .theme-swatch.y2k { background:linear-gradient(135deg,#ff2fb3,#00d5ff 58%,#fff176); }
       .theme-swatch.neo { background:linear-gradient(135deg,#ff4d4d 0 33%,#ffd447 33% 66%,#3ecf8e 66%); }
       .theme-swatch.cyber { background:linear-gradient(135deg,#05070b,#39ff14 52%,#00e5ff); }
-      .theme-toggle { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; border:1px solid var(--line); border-radius:22px; background:rgba(255,255,255,.72); padding:13px; color:var(--text); text-align:left; }
+      .theme-toggle { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:56px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.76); padding:13px; color:var(--text); text-align:left; }
       .switch { position:relative; width:52px; height:30px; flex-shrink:0; border:1px solid var(--line); border-radius:999px; background:#f5f0fa; }
       .switch::after { content:""; position:absolute; left:4px; top:4px; width:20px; height:20px; border-radius:999px; background:#fff; box-shadow:0 4px 12px rgba(76,53,117,.18); transition:transform .2s ease; }
       .theme-toggle[aria-pressed="true"] .switch { background:#ddf8f5; border-color:#8eddd3; }
       .theme-toggle[aria-pressed="true"] .switch::after { transform:translateX(22px); }
       .coin-badge{flex-shrink:0;border:1px solid #fde68a;border-radius:16px;background:#fffbeb;padding:8px 10px;color:#92400e;font-weight:950;font-size:13px}
-      .wardrobe-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.wardrobe-item{border:1px solid rgba(255,255,255,.85);border-radius:18px;background:rgba(255,255,255,.6);padding:9px;box-shadow:0 8px 20px rgba(76,53,117,.08)}.wardrobe-item.equipped{border-color:#a78bfa;box-shadow:0 0 0 2px #e9d5ff}.wardrobe-item strong{display:block;margin-top:7px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wardrobe-item button{width:100%;margin-top:7px;border:0;border-radius:12px;padding:8px 5px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:950}.wardrobe-item button:disabled{opacity:.45}.wardrobe-item button.primary{background:#4c3575;color:#fff}.wardrobe-item button.owned{background:#ede9fe;color:#6d28d9}.outfit-swatch{position:relative;height:58px;overflow:hidden;border-radius:13px;border:1px solid rgba(255,255,255,.8)}.outfit-swatch img{display:block;width:100%;height:100%;object-fit:contain}.mini-outfit{position:absolute;left:50%;top:8px;width:28px;height:25px;transform:translateX(-50%);border:2px solid rgba(76,53,117,.5);border-radius:10px 10px 5px 5px;background:#c4b5fd}.mini-outfit::after{content:"";position:absolute;left:1px;right:1px;top:20px;height:25px;border:inherit;border-radius:4px 4px 12px 12px;background:inherit}.mini-outfit.hanfu-cloud{background:#a7f3d0}.mini-outfit.denim-street{background:#93c5fd}.mini-outfit.ballet-pink{background:#f9a8d4}.mini-outfit.coquette-red{background:#fb7185}.mini-outfit.techwear-black{background:#374151}.mini-outfit.summer-sundress{background:#fde68a}.mini-outfit.office-chic{background:#e5e7eb}.mini-outfit.idol-silver{background:#c4b5fd}.mini-outfit.winter-coat{background:#93c5fd}
-      html[data-ui-theme="soft"] { --text:#4c3575; --muted:#8a74aa; --line:#e7d8ff; --purple:#a78bfa; --mint:#8eddd3; --pink:#f8bbd9; --honey:#ffbf8a; }
+      .wardrobe-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.wardrobe-item{border:1px solid rgba(255,255,255,.85);border-radius:18px;background:rgba(255,255,255,.62);padding:9px;box-shadow:0 8px 20px rgba(76,53,117,.07)}.wardrobe-item.equipped{border-color:#7c5bd6;box-shadow:0 0 0 2px #e9d5ff}.wardrobe-item strong{display:block;margin-top:7px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wardrobe-item button{width:100%;min-height:44px;margin-top:7px;border:0;border-radius:12px;padding:8px 5px;background:#fef3c7;color:#7a4606;font-size:12px;font-weight:950}.wardrobe-item button:disabled{opacity:.45}.wardrobe-item button.primary{background:#4c3575;color:#fff}.wardrobe-item button.owned{background:#ede9fe;color:#5b21b6}.outfit-swatch{position:relative;height:68px;overflow:hidden;border-radius:13px;border:1px solid rgba(255,255,255,.8)}.outfit-swatch img{display:block;width:100%;height:100%;object-fit:contain}.mini-outfit{position:absolute;left:50%;top:8px;width:28px;height:25px;transform:translateX(-50%);border:2px solid rgba(76,53,117,.5);border-radius:10px 10px 5px 5px;background:#c4b5fd}.mini-outfit::after{content:"";position:absolute;left:1px;right:1px;top:20px;height:25px;border:inherit;border-radius:4px 4px 12px 12px;background:inherit}.mini-outfit.hanfu-cloud{background:#a7f3d0}.mini-outfit.denim-street{background:#93c5fd}.mini-outfit.ballet-pink{background:#f9a8d4}.mini-outfit.coquette-red{background:#fb7185}.mini-outfit.techwear-black{background:#374151}.mini-outfit.summer-sundress{background:#fde68a}.mini-outfit.office-chic{background:#e5e7eb}.mini-outfit.idol-silver{background:#c4b5fd}.mini-outfit.winter-coat{background:#93c5fd}
+      html[data-ui-theme="soft"] { --text:#4c3575; --muted:#6f5b8f; --line:#e7d8ff; --purple:#7c5bd6; --mint:#70d5c8; --pink:#e98aaa; --honey:#eaa35f; }
       html[data-ui-theme="soft"] body { background:radial-gradient(circle at 12% 8%, rgba(221,248,245,.9), transparent 24rem),radial-gradient(circle at 88% 4%, rgba(248,187,217,.45), transparent 24rem),linear-gradient(180deg,#f8f4ff,#fff7fb); }
       html[data-ui-theme="mono"] { --text:#111; --muted:#5e5e5e; --line:#111; --purple:#111; --mint:#444; --pink:#777; --honey:#aaa; }
       html[data-ui-theme="liquid"] { --text:#17324d; --muted:#4e6f92; --line:rgba(255,255,255,.74); --purple:#60a5fa; --mint:#22d3ee; --pink:#c4b5fd; --honey:#93c5fd; }
@@ -267,7 +281,7 @@
       html[data-ui-theme="y2k"] .phone, html[data-ui-theme="y2k"] .glass, html[data-ui-theme="y2k"] .nav, html[data-ui-theme="y2k"] .stat, html[data-ui-theme="y2k"] input { background:rgba(255,255,255,.84); box-shadow:0 14px 0 rgba(0,213,255,.18),0 24px 48px rgba(255,47,179,.18); border-color:#ff74d4; }
       html[data-ui-theme="neo"] .phone, html[data-ui-theme="neo"] .glass, html[data-ui-theme="neo"] .nav, html[data-ui-theme="neo"] .stat, html[data-ui-theme="neo"] input, html[data-ui-theme="neo"] button { background:#fffdf0; border:2px solid #111; border-radius:0; box-shadow:6px 6px 0 #111; }
       html[data-ui-theme="cyber"] .phone, html[data-ui-theme="cyber"] .glass, html[data-ui-theme="cyber"] .nav, html[data-ui-theme="cyber"] .stat, html[data-ui-theme="cyber"] input { background:rgba(14,20,32,.88); box-shadow:inset 0 0 0 1px rgba(0,229,255,.16),0 0 30px rgba(57,255,20,.12); border-color:rgba(57,255,20,.62); }
-      html[data-ui-theme] .primary, html[data-ui-theme] .mode.selected, html[data-ui-theme] .pill.selected, html[data-ui-theme] .nav button.selected, html[data-ui-theme] .theme-option.selected { background:linear-gradient(135deg,var(--mint),var(--purple)); color:var(--text); }
+      html[data-ui-theme] .primary, html[data-ui-theme] .mode.selected, html[data-ui-theme] .pill.selected, html[data-ui-theme] .theme-option.selected { background:linear-gradient(135deg,var(--mint),var(--purple)); color:var(--text); }
       .nav {
         position: fixed;
         left: 50%;
@@ -277,16 +291,17 @@
         transform: translateX(-50%);
         display:grid;
         grid-template-columns:repeat(4,1fr);
-        gap:8px;
+        gap:4px;
         border:1px solid rgba(255,255,255,.84);
-        border-radius:28px;
-        background:rgba(255,255,255,.76);
-        padding:9px;
-        box-shadow:0 18px 40px rgba(76,53,117,.14);
+        border-radius:24px;
+        background:rgba(255,255,255,.92);
+        padding:6px 8px;
+        box-shadow:0 12px 32px rgba(76,53,117,.12);
         backdrop-filter:blur(16px);
       }
-      .nav button { border:0; border-radius:20px; background:transparent; color:#8a74aa; padding:9px 6px; text-align:center; font-size:11px; font-weight:950; }
-      .nav button.selected { background:linear-gradient(135deg,#ddf8f5,#f3e8ff); color:#4c3575; }
+      .nav button { min-height:56px; display:grid; place-items:center; align-content:center; gap:2px; border:0; border-radius:18px; background:transparent; color:#806a9f; padding:6px; text-align:center; font-size:11px; font-weight:950; }
+      .nav button svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+      .nav button.selected { background:#f3e8ff; color:#4c3575; }
       .modal, .loading-cover { position:fixed; inset:0; z-index:20; display:none; place-items:center; padding:20px; background:rgba(76,53,117,.18); backdrop-filter:blur(8px); }
       .modal.active, .loading-cover.active { display:grid; }
       .modal-card, .loading-card { width:min(100%,370px); padding:16px; animation:modal-enter 220ms ease both; }
@@ -307,11 +322,13 @@
       .skeleton-shimmer { position:relative; overflow:hidden; background:rgba(255,255,255,.68); }
       .skeleton-shimmer::after { content:""; position:absolute; inset:0; transform:translateX(-110%); background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent); animation:skeleton-shimmer 1.4s ease-in-out infinite; }
       .estimate-pop { animation:estimate-pop 220ms ease both; }
-      @media (max-width: 430px) {
+      @media (max-width: 480px) {
+        body { background:#f8f4ff; }
         h1 { font-size: 34px; }
-        h2 { font-size: 23px; }
-        .phone { width: min(100% - 40px, 390px); max-width: calc(100vw - 40px); border-radius: 32px; }
-        .nav { width: min(100% - 40px, 374px); }
+        h2 { font-size: 28px; }
+        .phone { width:100%; max-width:100%; min-height:100svh; margin:0; border:0; border-radius:0; box-shadow:none; }
+        .status { padding-left:max(18px,env(safe-area-inset-left)); padding-right:max(18px,env(safe-area-inset-right)); padding-top:max(14px,env(safe-area-inset-top)); }
+        .nav { width:calc(100% - 24px); max-width:none; }
         main { padding-left:16px; padding-right:16px; }
         .estimate-grid.estimate-fields { grid-template-columns:1fr; }
         .estimate-head { display:grid; }
@@ -329,8 +346,9 @@
       @keyframes toast-enter { from{opacity:0;transform:translate(-50%,10px) scale(.98)} to{opacity:1;transform:translate(-50%,0) scale(1)} }
       @keyframes toast-progress { from{transform:scaleX(1)} to{transform:scaleX(0)} }
       @keyframes estimate-pop { from{opacity:.72;transform:translateY(6px) scale(.99)} to{opacity:1;transform:translateY(0) scale(1)} }
-      @keyframes selected-pop { 0%{transform:scale(.97)} 68%{transform:scale(1.025)} 100%{transform:scale(1)} }
-      @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+      @keyframes selected-pop { 0%{transform:scale(.985)} 68%{transform:scale(1.012)} 100%{transform:scale(1)} }
+      @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+      @keyframes content-rise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
       @keyframes spin-soft { to{transform:rotate(360deg)} }
       @keyframes submit-sheen { 0%{transform:translateX(-120%)} 56%,100%{transform:translateX(120%)} }
       @keyframes status-pulse { 0%,100%{opacity:.68;transform:scale(.92)} 50%{opacity:1;transform:scale(1.12)} }
@@ -339,21 +357,22 @@
     </style>
   </head>
   <body>
+    <a href="#main-content" style="position:fixed;left:16px;top:16px;z-index:100;transform:translateY(-180%);border-radius:10px;background:#4c3575;color:#fff;padding:12px 16px;font-size:14px;font-weight:900" onfocus="this.style.transform='translateY(0)'" onblur="this.style.transform='translateY(-180%)'">跳到主要内容</a>
     <div class="phone">
       <div class="status"><span>9:41</span><span>今天不喝</span><span>100%</span></div>
-      <main>
+      <main id="main-content">
         <section class="view stack active" data-page="home">
           <header><p class="eyebrow" id="home-subtitle">和奶茶说拜拜的第 1 天</p><h1>今天不喝</h1></header>
           <div id="home-character"></div>
-          <div class="stats" id="home-stats"></div>
-          <section class="glass stack" style="padding:16px">
+          <section class="glass stack home-focus">
             <div id="home-today"></div>
-            <div class="today-panel"><strong id="home-streak">连续 0 天记录</strong><p class="hint" style="margin-top:6px">每次选择都有被认真看见。</p></div>
+            <div class="streak-panel"><strong id="home-streak">连续 0 天记录</strong><p class="hint" style="margin-top:6px">每次选择都有被认真看见。</p></div>
             <div class="actions">
               <button class="primary" data-start="saved"><small>虚拟下单</small><br />今天戒了</button>
               <button class="secondary" data-start="consumed"><small>温柔记录</small><br />今天喝了</button>
             </div>
           </section>
+          <div class="stats" id="home-stats"></div>
         </section>
         <section class="view stack" data-page="record">
           <header><p class="eyebrow">每一次选择，都离目标更近一点</p><h2>记录一杯</h2></header>
@@ -376,8 +395,8 @@
         </section>
         <section class="view stack" data-page="data">
           <header><p class="eyebrow">状态、统计和历史都在这里</p><h2>我的数据</h2></header>
+          <div class="glass" style="padding:20px;border-left:4px solid #70d5c8"><p class="eyebrow">连续打卡</p><h1 id="streak" style="font-size:42px">0 天</h1></div>
           <div id="data-character"></div>
-          <div class="glass" style="padding:20px"><p class="eyebrow">连续打卡</p><h1 id="streak">0 天</h1></div>
           <div class="glass" style="padding:20px" id="trend-card"></div>
           <div class="stats" id="data-stats"></div>
           <div class="glass" style="padding:20px" id="data-score-meter"></div>
@@ -386,15 +405,20 @@
           <button class="danger" id="reset">清空所有记录</button>
         </section>
         <section class="view stack" data-page="profile">
-          <header><p class="eyebrow">个人账号与同步</p><h2>我的</h2></header>
-          <section class="glass account-card"><div class="avatar">今</div><div style="min-width:0"><strong style="display:block;font-size:18px">本地体验账号</strong><p class="hint" style="margin-top:6px">第一版暂不登录，数据保存在当前浏览器。后续可迁移到微信小程序云存储或 iOS 本地账号。</p></div></section>
+          <header><p class="eyebrow">账户与个性化</p><h2>我的</h2></header>
+          <section class="glass account-card" aria-label="当前账户状态"><div class="avatar">今</div><div style="min-width:0"><div class="account-heading"><strong style="font-size:18px">本地模式</strong><span class="account-badge">无需登录</span></div><p class="hint" id="local-account-note" style="margin-top:6px">记录、衣橱和界面设置仅保存在此设备。</p></div></section>
           <div id="profile-stats" hidden></div>
           <section class="glass theme-controls" id="theme-controls" style="padding:20px"></section>
           <section class="glass stack" id="wardrobe-shop" style="padding:20px"></section>
         </section>
       </main>
     </div>
-    <nav class="nav" aria-label="底部导航"><button class="selected" data-view="home">首页</button><button data-view="record">记录</button><button data-view="data">数据</button><button data-view="profile">我的</button></nav>
+    <nav class="nav" aria-label="底部导航">
+      <button class="selected" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg><span>首页</span></button>
+      <button data-view="record"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg><span>记录</span></button>
+      <button data-view="data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg><span>数据</span></button>
+      <button data-view="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>我的</span></button>
+    </nav>
     <div class="modal" id="result-modal"><div class="glass modal-card" id="result-card"></div></div>
     <div class="modal" id="reset-modal"><div class="glass modal-card"><div style="border-radius:28px;background:linear-gradient(135deg,#fff0f7,#f3e8ff);padding:18px"><p class="eyebrow">谨慎操作</p><h2 style="font-size:24px">确认清空所有记录？</h2><p class="hint" style="margin-top:8px">清空后会恢复到初始 Body Score 50，历史记录和统计数据都会从本地移除。</p></div><div class="grid-2" style="margin-top:14px"><button class="secondary" id="cancel-reset" style="text-align:center">先保留</button><button class="primary" id="confirm-reset" style="text-align:center;background:linear-gradient(90deg,#f8bbd9,#ffbf8a)">确认清空</button></div></div></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -451,7 +475,7 @@
       function earnedCoins(){ return stats.records.filter(record=>record.mode==="saved").length*COINS_PER_SAVED_CUP; }
       function spentCoins(){ return wardrobe.owned.reduce((sum,id)=>sum+outfit(id).price,0); }
       function coins(){ return Math.max(0,earnedCoins()-spentCoins()); }
-      function wardrobeHtml(){ const balance=coins(); return `<div><div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><div><p class="eyebrow">角色衣橱</p><h2 style="font-size:20px">用戒奶茶金币换新衣</h2></div><span class="coin-badge">${balance} 金币</span></div><p class="hint" style="margin-top:8px">每成功戒 1 杯获得 10 金币。服装从 10 到 50 杯的坚持兑换。</p><div class="wardrobe-grid">${OUTFITS.map(item=>{const owned=wardrobe.owned.includes(item.id),equipped=wardrobe.equipped===item.id;return `<article class="wardrobe-item ${equipped?"equipped":""}"><div class="outfit-swatch" style="background:${item.accent}">${item.asset?`<img src="${item.asset}" alt="${item.name}服装预览" />`:`<span class="mini-outfit ${item.id}"></span>`}</div><strong>${item.name}</strong>${owned?`<button data-equip-outfit="${item.id}" class="${equipped?"owned":"primary"}" type="button">${equipped?"已穿上":"换上"}</button>`:`<button data-buy-outfit="${item.id}" ${balance<item.price?"disabled":""} type="button">${item.price} 金币</button>`}</article>`;}).join("")}</div><p class="hint" style="margin-top:10px">当前穿着：${outfit(wardrobe.equipped).name}。服装会按 Body Score 阶段等比调整。</p></div>`; }
+      function wardrobeHtml(){ const balance=coins(); return `<div><div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><div><p class="eyebrow">角色衣橱</p><h2 style="font-size:20px">用戒奶茶金币换新衣</h2></div><span class="coin-badge">${balance} 金币</span></div><p class="hint" style="margin-top:8px">每成功戒 1 杯获得 10 金币。服装从 10 到 50 杯的坚持兑换。</p><div class="wardrobe-grid">${OUTFITS.map(item=>{const owned=wardrobe.owned.includes(item.id),equipped=wardrobe.equipped===item.id;return `<article class="wardrobe-item ${equipped?"equipped":""}"><div class="outfit-swatch" style="background:${item.accent}">${item.asset?`<img src="${item.asset}" loading="lazy" decoding="async" alt="${item.name}服装预览" />`:`<span class="mini-outfit ${item.id}"></span>`}</div><strong>${item.name}</strong>${owned?`<button data-equip-outfit="${item.id}" class="${equipped?"owned":"primary"}" type="button">${equipped?"已穿上":"换上"}</button>`:`<button data-buy-outfit="${item.id}" ${balance<item.price?"disabled":""} type="button">${item.price} 金币</button>`}</article>`;}).join("")}</div><p class="hint" style="margin-top:10px">当前穿着：${outfit(wardrobe.equipped).name}。每套服饰都配有五个完整体型版本，不改变 Body Score 的真实阶段。</p></div>`; }
 
       function clamp(value,min,max){ return Math.max(min, Math.min(max, value)); }
       function today(){ return new Date().toISOString().slice(0,10); }
@@ -475,7 +499,7 @@
       }
       function stage(score){ return score<=25?1:score<=45?2:score<=60?3:score<=80?4:5; }
       function status(score){ return stageLabels[stage(score)-1]; }
-      function stat(label,value,tone="purple"){ return `<div class="stat"><small class="hint">${label}</small><strong>${value}</strong></div>`; }
+      function stat(label,value,tone="purple"){ return `<div class="stat tone-${tone}"><small class="hint">${label}</small><strong>${value}</strong></div>`; }
       function characterHtml(compact=false,bubble=false){ const currentStage=stage(stats.bodyScore); const defaultBase=`images/girl-stage-${currentStage}-transparent.png`; const blink=`images/girl-stage-${currentStage}-blink.png`; const wave=`images/girl-stage-${currentStage}-wave.png`; const equipped=outfit(wardrobe.equipped); const dressed=equipped.id!=="default"; const base=dressed?`images/dressed/${equipped.id}-stage-${currentStage}.png`:defaultBase; const motion=dressed?"":`<img class="motion-frame motion-blink" src="${blink}" onerror="this.hidden=true" alt="" aria-hidden="true" /><img class="motion-frame motion-wave" src="${wave}" onerror="this.hidden=true" alt="" aria-hidden="true" />`; return `<div class="character ${compact?"compact":""}" data-character data-stage="${currentStage}"${dressed?' data-static="true"':""}><span class="badge">${status(stats.bodyScore)}</span>${bubble?'<span class="bubble">你超棒的，每一次选择，都是更好的自己。</span>':""}<div class="character-canvas-anchor"><div class="character-canvas"><img class="motion-frame motion-base" src="${base}" data-fallback-src="${dressed?defaultBase:'images/girl-normal-transparent.png'}" onerror="fallbackCharacterImage(this)" alt="${dressed?`${status(stats.bodyScore)}，穿着${equipped.name}`:status(stats.bodyScore)}" />${motion}</div></div></div>`; }
       function fallbackCharacterImage(image){ if(!image.dataset.fallback){ image.dataset.fallback="1"; image.src=image.dataset.fallbackSrc||"images/girl-normal-transparent.png"; return; } const wrap=image.closest("[data-character]"); if(wrap) wrap.innerHTML='<div style="display:grid;min-height:inherit;place-items:center;padding:28px;color:#8a74aa;font-weight:800;text-align:center">角色图片未找到</div>'; }
       function estimate(sourceForm=form){
@@ -514,7 +538,7 @@
       function todaySummaryHtml(){ const records=stats.records.filter(r=>r.date.slice(0,10)===today()); const savedRecords=records.filter(r=>r.mode==="saved"); const consumedRecords=records.filter(r=>r.mode==="consumed"); const netMoney=roundMoney(savedRecords.reduce((s,r)=>s+r.price,0)-consumedRecords.reduce((s,r)=>s+r.price,0)); const checked=records.length>0; return `<div class="today-panel ${checked&&netMoney<0?"consumed":""}" aria-live="polite"><div class="today-row"><div style="min-width:0"><p style="font-size:14px;font-weight:950">${checked?`今日已记录 ${records.length} 次`:"今日还没记录"}</p><small class="hint">${checked?`戒了 ${savedRecords.length} 次 · 喝了 ${consumedRecords.length} 次`:"选一个按钮开始，记录会保存在本地。"}</small></div><span class="today-badge">${checked?`${netMoney>=0?"+":""}¥${netMoney}`:"待打卡"}</span></div></div>`; }
       function historyHtml(){ if(!stats.records.length)return '<div class="history-empty"><strong style="display:block;font-size:16px">还没有记录</strong><span class="hint" style="display:block;margin-top:8px">第一条选择会出现在这里，趋势和角色状态也会一起更新。</span></div>'; const groups=stats.records.slice(0,24).reduce((items,r)=>{ const date=r.date.slice(0,10); const delta=r.mode==="saved"?r.price:-r.price; const existing=items.find(i=>i.date===date); if(existing){existing.records.push(r);existing.netMoney+=delta;}else{items.push({date,records:[r],netMoney:delta});} return items; },[]); return groups.map(g=>`<section class="history-group"><div class="history-heading"><div style="min-width:0"><strong>${g.date.replaceAll("-",".")}</strong><br><small class="hint">${g.records.length} 条记录</small></div><span class="pill selected">净钱包 ${g.netMoney>=0?"+":""}¥${roundMoney(g.netMoney)}</span></div>${g.records.map(r=>{ const saved=r.mode==="saved"; return `<article class="record" aria-label="${r.drinkName||"未命名饮品"}，${saved?"今天戒了":"今天喝了"}"><div class="record-head"><div style="min-width:0"><strong style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.drinkName||"未命名饮品"}</strong><small class="hint">${saved?"今天戒了":"今天喝了"} · ${r.source} · ${r.confidence}可信度</small></div><div style="display:flex;gap:7px;align-items:center;flex-shrink:0"><span class="pill selected">${saved?"+":"-"}¥${r.price}</span><button class="delete-btn" data-delete="${r.id}" type="button">删除</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;color:#7d679d;font-size:12px;font-weight:800"><span style="border-radius:16px;background:#faf7ff;padding:8px 10px">${saved?"少摄入":"增加"} ${r.calories} kcal</span><span style="border-radius:16px;background:#faf7ff;padding:8px 10px">${saved?"少摄入":"增加"} ${r.sugarGram}g 糖</span></div>${r.explanation?`<p class="hint" style="margin-top:10px">${r.explanation}</p>`:""}</article>`; }).join("")}</section>`).join(""); }
       function stageProgressHtml(){ const current=stage(stats.bodyScore); return stageLabels.map((label,index)=>`<span class="stage-dot ${index+1===current?"active":""}">S${index+1}</span>`).join(""); }
-      function render(){ finalizeStats(); document.querySelector("#home-subtitle").textContent=`和奶茶说拜拜的第 ${Math.max(stats.streakDays,1)} 天`; document.querySelector("#home-character").innerHTML=characterHtml(false,true); document.querySelector("#record-character").innerHTML=characterHtml(true,false); document.querySelector("#data-character").innerHTML=characterHtml(true,false); document.querySelector("#home-stats").innerHTML=stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories)+stat("累计减少糖分",`${stats.totalReducedSugar}g`,"pink")+stat("Body Score",stats.bodyScore,"amber"); document.querySelector("#home-today").innerHTML=todaySummaryHtml(); document.querySelector("#home-streak").textContent=`连续 ${stats.streakDays} 天记录`; document.querySelector("#data-stats").innerHTML=stat("当前状态",status(stats.bodyScore),"mint")+stat("Body Score",stats.bodyScore)+stat("已记录天数",stats.streakDays,"pink")+stat("累计记录",stats.records.length,"amber")+stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories); document.querySelector("#profile-stats").innerHTML=stat("登录状态","未登录")+stat("同步方式","本地","mint")+stat("本机记录",stats.records.length,"pink")+stat("存储 Key",KEY,"amber"); document.querySelector("#wardrobe-shop").innerHTML=wardrobeHtml(); document.querySelector("#streak").textContent=`${stats.streakDays} 天`; document.querySelector("#trend-card").innerHTML=trendHtml(); document.querySelector("#data-score-meter").innerHTML=scoreMeterHtml(); document.querySelector("#stage-title").textContent=`当前阶段 S${stage(stats.bodyScore)}`; document.querySelector("#stage-progress").innerHTML=stageProgressHtml(); document.querySelector("#history").innerHTML=historyHtml(); renderEstimate(); startCharacterMotion(); }
+      function render(){ finalizeStats(); document.querySelector("#home-subtitle").textContent=`和奶茶说拜拜的第 ${Math.max(stats.streakDays,1)} 天`; document.querySelector("#home-character").innerHTML=characterHtml(false,true); document.querySelector("#record-character").innerHTML=characterHtml(true,false); document.querySelector("#data-character").innerHTML=characterHtml(true,false); document.querySelector("#home-stats").innerHTML=stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories)+stat("累计减少糖分",`${stats.totalReducedSugar}g`,"pink")+stat("Body Score",stats.bodyScore,"amber"); document.querySelector("#home-today").innerHTML=todaySummaryHtml(); document.querySelector("#home-streak").textContent=`连续 ${stats.streakDays} 天记录`; document.querySelector("#data-stats").innerHTML=stat("当前状态",status(stats.bodyScore),"mint")+stat("Body Score",stats.bodyScore)+stat("已记录天数",stats.streakDays,"pink")+stat("累计记录",stats.records.length,"amber")+stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories); document.querySelector("#profile-stats").innerHTML=stat("登录状态","未登录")+stat("同步方式","本地","mint")+stat("本机记录",stats.records.length,"pink")+stat("存储 Key",KEY,"amber"); document.querySelector("#local-account-note").textContent=`记录、衣橱和界面设置仅保存在此设备。当前已有 ${stats.records.length} 条记录。`; document.querySelector("#wardrobe-shop").innerHTML=wardrobeHtml(); document.querySelector("#streak").textContent=`${stats.streakDays} 天`; document.querySelector("#trend-card").innerHTML=trendHtml(); document.querySelector("#data-score-meter").innerHTML=scoreMeterHtml(); document.querySelector("#stage-title").textContent=`当前阶段 S${stage(stats.bodyScore)}`; document.querySelector("#stage-progress").innerHTML=stageProgressHtml(); document.querySelector("#history").innerHTML=historyHtml(); renderEstimate(); startCharacterMotion(); }
       function themeControlsHtml(){ return `<div><p class="eyebrow">界面风格</p><h2 style="font-size:20px;margin-top:4px">换一套视觉皮肤</h2></div><div class="theme-options">${UI_THEMES.map(item=>`<button type="button" class="theme-option ${uiPrefs.theme===item.key?"selected":""}" data-theme-choice="${item.key}" aria-pressed="${uiPrefs.theme===item.key}"><strong>${item.label}<span class="theme-swatch ${item.key}"></span></strong><small>${item.desc}</small></button>`).join("")}</div><button type="button" class="theme-toggle" data-show-character aria-pressed="${uiPrefs.showCharacter}"><span><strong style="display:block">显示人物</strong><small class="hint">${uiPrefs.showCharacter?"首页、记录页和数据页会展示小人、Body Score 与阶段进度。":"已隐藏小人、Body Score、阶段进度和人物相关状态。"}</small></span><span class="switch" aria-hidden="true"></span></button>`; }
       function syncResultModalCharacterText(){ if(uiPrefs.showCharacter)return; document.querySelectorAll("#result-card .hint").forEach(node=>{ node.textContent=node.textContent.replace(/\s*·\s*Body Score\s*[+-]2/g,""); }); }
       function applyUiPreferencesToPreview(){ applyUiShell(); const show=uiPrefs.showCharacter; const controls=document.querySelector("#theme-controls"); if(controls) controls.innerHTML=themeControlsHtml(); ["#home-character","#record-character","#data-character"].forEach(selector=>{ const node=document.querySelector(selector); if(node&&!show) node.innerHTML=""; }); if(!show){ document.querySelector("#home-stats").innerHTML=stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories)+stat("累计减少糖分",`${stats.totalReducedSugar}g`,"pink"); document.querySelector("#data-stats").innerHTML=stat("已记录天数",stats.streakDays,"pink")+stat("累计记录",stats.records.length,"amber")+stat("累计省钱",`¥${stats.totalSavedMoney}`,"mint")+stat("累计减少热量",stats.totalReducedCalories); } document.querySelector("#data-score-meter")?.classList.toggle("hidden",!show); document.querySelector("#stage-progress")?.closest(".glass")?.classList.toggle("hidden",!show); syncResultModalCharacterText(); }

@@ -26,21 +26,24 @@ export function ProfileView({
   onEquipOutfit
 }: ProfileViewProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <header>
-        <p className="text-sm font-bold text-[#8A74AA]">个人账号与同步</p>
-        <h1 className="mt-1 text-3xl font-black text-[#4C3575]">我的</h1>
+        <p className="text-[13px] font-bold text-[#6F5B8F]">账户与个性化</p>
+        <h1 className="mt-1 text-[30px] font-black leading-none text-[#4C3575]">我的</h1>
       </header>
 
-      <section className="glass-card rounded-[32px] p-5">
+      <section className="glass-card rounded-[26px] p-5" aria-label="当前账户状态">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[24px] bg-gradient-to-br from-[#F3E8FF] to-[#DDF8F5] text-2xl font-black text-[#7C5BD6]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] bg-gradient-to-br from-[#F3E8FF] to-[#DDF8F5] text-xl font-black text-[#6D4FC2]">
             今
           </div>
           <div className="min-w-0">
-            <p className="text-lg font-black text-[#4C3575]">本地体验账号</p>
-            <p className="mt-1 text-xs font-semibold leading-relaxed text-[#8A74AA]">
-              第一版暂不登录，数据保存在当前浏览器。后续可迁移到微信小程序云存储或 iOS 本地账号。
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-lg font-black text-[#4C3575]">本地模式</p>
+              <span className="rounded-full bg-[#DDF8F5] px-2.5 py-1 text-[11px] font-black text-[#226962]">无需登录</span>
+            </div>
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-[#6F5B8F]">
+              记录、衣橱和界面设置仅保存在此设备。当前已有 {stats.records.length} 条记录。
             </p>
           </div>
         </div>

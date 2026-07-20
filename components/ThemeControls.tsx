@@ -14,7 +14,7 @@ export function ThemeControls({
   onShowCharacterChange
 }: ThemeControlsProps) {
   return (
-    <section className="glass-card theme-control-card rounded-[30px] p-5">
+    <section className="glass-card theme-control-card rounded-[26px] p-5">
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-bold text-[#8A74AA]">界面风格</p>
@@ -34,7 +34,7 @@ export function ThemeControls({
               type="button"
               onClick={() => onThemeChange(option.key)}
               aria-pressed={selected}
-              className={`soft-focus theme-option min-h-[86px] rounded-[22px] border p-3 text-left transition duration-200 hover:-translate-y-0.5 active:scale-95 ${
+              className={`soft-focus theme-option min-h-[92px] rounded-[18px] border p-3 text-left transition duration-200 hover:-translate-y-0.5 active:scale-[0.98] ${
                 selected
                   ? "selected-pop border-[#A78BFA] bg-[#F3E8FF] shadow-[0_12px_26px_rgba(167,139,250,0.2)]"
                   : "border-[#E7D8FF] bg-white/70"
@@ -55,7 +55,7 @@ export function ThemeControls({
           type="button"
           onClick={() => onShowCharacterChange(!showCharacter)}
           aria-pressed={showCharacter}
-          className="soft-focus flex w-full items-center justify-between gap-3 rounded-[20px] bg-white/70 px-4 py-3 text-left transition duration-200 hover:-translate-y-0.5 active:scale-95"
+          className="soft-focus flex min-h-14 w-full items-center justify-between gap-3 rounded-[18px] bg-white/70 px-4 py-3 text-left transition duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
         >
           <span className="min-w-0">
             <span className="block text-sm font-black text-[#4C3575]">显示人物</span>

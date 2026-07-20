@@ -21,12 +21,12 @@ export function StatCard({ label, value, hint, tone = "purple" }: StatCardProps)
 
   return (
     <div
-      className={`group min-h-[112px] rounded-[26px] border border-[#E7D8FF] bg-gradient-to-br ${toneClass[tone]} p-4 shadow-[0_12px_28px_rgba(76,53,117,0.08)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(76,53,117,0.12)]`}
+      className={`group min-h-[102px] rounded-[22px] border border-[#E7D8FF] bg-gradient-to-br ${toneClass[tone]} p-3.5 shadow-[0_10px_24px_rgba(76,53,117,0.07)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(76,53,117,0.1)]`}
     >
-      <span className={`mb-3 block h-1.5 w-10 rounded-full bg-gradient-to-r ${accentClass[tone]} transition duration-200 group-hover:w-14`} aria-hidden="true" />
-      <p className="text-xs font-semibold leading-snug text-[#8670A7]">{label}</p>
-      <p className="mt-1 break-words text-2xl font-black tracking-normal text-[#4C3575]">{value}</p>
-      {hint ? <p className="mt-1 break-words text-xs leading-snug text-[#9886B5]">{hint}</p> : null}
+      <span className={`mb-2.5 block h-1 w-8 rounded-full bg-gradient-to-r ${accentClass[tone]} transition duration-200 group-hover:w-12`} aria-hidden="true" />
+      <p className="text-xs font-semibold leading-snug text-[#6F5B8F]">{label}</p>
+      <p className="mt-1 break-words text-[22px] font-black leading-tight tracking-normal text-[#4C3575]">{value}</p>
+      {hint ? <p className="mt-1 break-words text-xs leading-snug text-[#806A9F]">{hint}</p> : null}
     </div>
   );
 }

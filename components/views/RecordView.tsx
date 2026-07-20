@@ -57,14 +57,14 @@ export function RecordView({ stats, form, estimate, showCharacter, outfitId, isE
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[#8A74AA]">每一次选择，都离目标更近一点</p>
-          <h1 className="mt-1 text-3xl font-black text-[#4C3575]">记录一杯</h1>
+          <p className="text-[13px] font-bold text-[#6F5B8F]">每一次选择，都离目标更近一点</p>
+          <h1 className="mt-1 text-[30px] font-black leading-none text-[#4C3575]">记录一杯</h1>
         </div>
         {showCharacter ? (
-          <div className="w-28 shrink-0">
+          <div className="w-24 shrink-0">
             <CharacterDisplay bodyScore={stats.bodyScore} outfitId={outfitId} compact />
           </div>
         ) : null}
@@ -75,11 +75,11 @@ export function RecordView({ stats, form, estimate, showCharacter, outfitId, isE
         <ModeCard title="今天喝了" text="真实记录，温柔看见" active={form.mode === "consumed"} onClick={() => updateForm({ mode: "consumed" })} tone="pink" />
       </div>
 
-      <section className="glass-card space-y-5 rounded-[32px] p-5">
-        <div className="rounded-[26px] bg-white/55 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+      <section className="glass-card space-y-5 rounded-[26px] p-5">
+        <div>
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-normal text-[#9886B5]">Drink details</p>
+              <p className="text-xs font-black text-[#806A9F]">记录信息</p>
               <h2 className="text-lg font-black text-[#4C3575]">饮品信息</h2>
             </div>
             <span className="rounded-full bg-[#F3E8FF] px-3 py-1 text-xs font-black text-[#6D5A8C]">
@@ -138,10 +138,10 @@ export function RecordView({ stats, form, estimate, showCharacter, outfitId, isE
           </div>
         </div>
 
-        <div key={estimateKey} className="estimate-pop rounded-[26px] border border-[#E7D8FF] bg-[#FAF7FF] p-4 text-sm font-bold text-[#6D5A8C]" aria-live="polite">
+        <div key={estimateKey} className="estimate-pop rounded-[22px] border border-[#E7D8FF] bg-[#FAF7FF]/82 p-4 text-sm font-bold text-[#5F4A7E]" aria-live="polite">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-normal text-[#9886B5]">Live estimate</p>
+              <p className="text-xs font-black text-[#806A9F]">智能分析</p>
               <p className="text-sm font-black text-[#4C3575]">实时估算</p>
             </div>
             <span className="flex flex-wrap items-center justify-end gap-2">
@@ -213,7 +213,7 @@ export function RecordView({ stats, form, estimate, showCharacter, outfitId, isE
           onClick={submitRecord}
           disabled={isSubmitting}
           aria-busy={isSubmitting}
-          className={`soft-focus ${isSubmitting ? "submit-busy" : ""} w-full rounded-[26px] px-5 py-4 text-base font-black text-white shadow-[0_16px_36px_rgba(167,139,250,0.26)] transition duration-200 hover:-translate-y-1 active:scale-95 disabled:hover:translate-y-0 disabled:active:scale-100 ${
+          className={`soft-focus ${isSubmitting ? "submit-busy" : ""} min-h-[54px] w-full rounded-[22px] px-5 py-4 text-base font-black text-white shadow-[0_14px_30px_rgba(124,91,214,0.22)] transition duration-200 hover:-translate-y-0.5 active:scale-[0.98] disabled:hover:translate-y-0 disabled:active:scale-100 ${
             savedMode ? "bg-gradient-to-r from-[#8EDDD3] to-[#A78BFA]" : "bg-gradient-to-r from-[#F8BBD9] to-[#FFBF8A]"
           }`}
         >
@@ -229,7 +229,6 @@ export function RecordView({ stats, form, estimate, showCharacter, outfitId, isE
 
 function TextInput({
   label,
-  icon,
   hint,
   value,
   placeholder,
@@ -246,7 +245,7 @@ function TextInput({
     <label className="block rounded-[22px] border border-transparent px-1 py-1 transition duration-200 hover:border-white/70 hover:bg-white/45 focus-within:border-[#A78BFA]/40 focus-within:bg-white/60">
       <span className="mb-2 block space-y-1">
         <span className="flex items-center gap-2 text-sm font-black text-[#4C3575]">
-          <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#F3E8FF] px-1 text-[11px] font-black text-[#7C5BD6]">{icon}</span>
+          <span className="h-2 w-2 shrink-0 rounded-full bg-[#7C5BD6] shadow-[0_0_0_4px_rgba(124,91,214,0.12)]" aria-hidden="true" />
           {label}
         </span>
         <span className="block text-xs font-semibold leading-snug text-[#9886B5]">{hint}</span>
@@ -255,7 +254,7 @@ function TextInput({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="soft-focus w-full rounded-[22px] border border-[#E7D8FF] bg-white/80 px-4 py-3 text-sm font-semibold text-[#4C3575] placeholder:text-[#B5A5CA] transition duration-200 focus:border-[#A78BFA] focus:bg-white"
+        className="soft-focus min-h-12 w-full rounded-[18px] border border-[#E7D8FF] bg-white/84 px-4 py-3 text-base font-semibold text-[#4C3575] placeholder:text-[#9D8CB4] transition duration-200 focus:border-[#7C5BD6] focus:bg-white"
       />
     </label>
   );
@@ -304,7 +303,7 @@ function EstimateInput({
 }) {
   return (
     <label
-      className={`grid min-w-0 gap-1 rounded-[18px] border px-2 py-2 transition focus-within:border-[#A78BFA] focus-within:bg-white ${
+      className={`grid min-w-0 gap-1 rounded-[18px] border px-2 py-2 transition focus-within:border-[#7C5BD6] focus-within:bg-white ${
         edited ? "border-[#A78BFA]/50 bg-gradient-to-br from-[#F3E8FF] to-white shadow-[0_10px_24px_rgba(167,139,250,0.16)]" : "border-transparent bg-white/70"
       }`}
     >
@@ -322,7 +321,7 @@ function EstimateInput({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           aria-label={`${label}，可手动修改`}
-          className="soft-focus min-w-0 flex-1 rounded-[14px] border border-[#E7D8FF] bg-white/85 px-2 py-2 text-center text-sm font-black text-[#4C3575] transition duration-200 focus:border-[#A78BFA] focus:bg-white"
+          className="soft-focus min-h-11 min-w-0 flex-1 rounded-[14px] border border-[#E7D8FF] bg-white/85 px-2 py-2 text-center text-base font-black text-[#4C3575] transition duration-200 focus:border-[#7C5BD6] focus:bg-white"
         />
         {suffix ? <span>{suffix}</span> : null}
       </span>

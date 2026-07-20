@@ -12,7 +12,7 @@ export function ModeCard({ title, text, active, onClick, tone }: ModeCardProps) 
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`soft-focus rounded-[26px] border p-4 text-left transition duration-200 hover:-translate-y-0.5 active:scale-95 ${
+      className={`soft-focus min-h-[84px] rounded-[22px] border p-4 text-left transition duration-200 hover:-translate-y-0.5 active:scale-[0.98] ${
         active
           ? tone === "mint"
             ? "selected-pop border-[#8EDDD3] bg-[#DDF8F5] shadow-[0_14px_28px_rgba(142,221,211,0.2)]"

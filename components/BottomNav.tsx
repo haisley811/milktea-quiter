@@ -6,17 +6,17 @@ type BottomNavProps = {
   onChange: (view: ViewKey) => void;
 };
 
-const navItems: { key: ViewKey; label: string; icon: string }[] = [
-  { key: "home", label: "首页", icon: "今" },
-  { key: "record", label: "记录", icon: "记" },
-  { key: "data", label: "数据", icon: "数" },
-  { key: "profile", label: "我的", icon: "我" }
+const navItems: { key: ViewKey; label: string }[] = [
+  { key: "home", label: "首页" },
+  { key: "record", label: "记录" },
+  { key: "data", label: "数据" },
+  { key: "profile", label: "我的" }
 ];
 
 export function BottomNav({ activeView, isSwitching = false, onChange }: BottomNavProps) {
   return (
     <nav
-      className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-1/2 z-40 w-[calc(100%-28px)] max-w-[402px] -translate-x-1/2 rounded-[28px] border border-white/80 bg-white/90 px-2 py-2 shadow-[0_16px_40px_rgba(76,53,117,0.16)] backdrop-blur-xl"
+      className="bottom-nav fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-1/2 z-40 w-[calc(100%-28px)] max-w-[402px] -translate-x-1/2 rounded-[24px] border border-[#E7D8FF]/80 bg-white/92 px-2 py-1.5 shadow-[0_12px_32px_rgba(76,53,117,0.12)] backdrop-blur-xl"
       aria-busy={isSwitching}
       aria-label="底部导航"
     >
@@ -30,18 +30,17 @@ export function BottomNav({ activeView, isSwitching = false, onChange }: BottomN
               onClick={() => onChange(item.key)}
               disabled={isSwitching && !selected}
               aria-current={selected ? "page" : undefined}
-              className={`soft-focus relative flex min-h-14 flex-col items-center justify-center rounded-[22px] text-xs font-bold transition duration-200 active:scale-95 disabled:opacity-60 ${
-                selected ? "selected-pop bg-[#F3E8FF] text-[#4C3575] shadow-inner" : "text-[#9A86B8] hover:bg-[#FAF7FF]"
+              className={`soft-focus relative flex min-h-14 flex-col items-center justify-center rounded-[18px] text-[11px] font-bold transition duration-200 active:scale-[0.98] disabled:opacity-60 ${
+                selected ? "selected-pop bg-[#F3E8FF] text-[#4C3575]" : "text-[#806A9F] hover:bg-[#FAF7FF]"
               }`}
             >
-              {selected ? <span className="absolute top-1.5 h-1 w-5 rounded-full bg-[#A78BFA]/70" aria-hidden="true" /> : null}
               <span
-                className={`mb-0.5 grid h-6 w-6 place-items-center rounded-full text-[11px] leading-none transition duration-200 ${
-                  selected ? "bg-white/85 text-[#7C5BD6]" : "bg-white/55 text-[#9A86B8]"
+                className={`mb-0.5 grid h-6 w-6 place-items-center transition duration-200 ${
+                  selected ? "text-[#6D4FC2]" : "text-[#806A9F]"
                 }`}
                 aria-hidden="true"
               >
-                {item.icon}
+                <NavIcon view={item.key} />
               </span>
               <span>{item.label}</span>
             </button>
@@ -50,4 +49,25 @@ export function BottomNav({ activeView, isSwitching = false, onChange }: BottomN
       </div>
     </nav>
   );
+}
+
+function NavIcon({ view }: { view: ViewKey }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const
+  };
+
+  if (view === "home") {
+    return <svg viewBox="0 0 24 24" className="h-5 w-5" {...common}><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>;
+  }
+  if (view === "record") {
+    return <svg viewBox="0 0 24 24" className="h-5 w-5" {...common}><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>;
+  }
+  if (view === "data") {
+    return <svg viewBox="0 0 24 24" className="h-5 w-5" {...common}><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>;
+  }
+  return <svg viewBox="0 0 24 24" className="h-5 w-5" {...common}><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>;
 }
