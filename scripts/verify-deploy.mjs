@@ -46,6 +46,7 @@ const netlify = file("netlify.toml");
 assert.match(netlify, /command = "npm run build"/);
 assert.match(netlify, /publish = "\.next"/);
 assert.match(netlify, /NODE_VERSION = "22"/);
+assert.match(netlify, /package = "@netlify\/plugin-nextjs"/);
 assert.match(netlify, /for = "\/api\/\*"/);
 assert.match(netlify, /Cache-Control = "no-store"/);
 
