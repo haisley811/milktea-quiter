@@ -75,34 +75,43 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
             角色图片未找到
           </div>
         ) : (
-          <div className="relative">
-            <img
-              src={src}
-              alt={stageMeta.status}
-              className={`floaty mx-auto block h-auto w-full object-contain ${motionFrame === "base" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
-              onError={() => {
-                if (src !== "/images/girl-normal-transparent.png") {
-                  setSrc("/images/girl-normal-transparent.png");
-                  return;
-                }
-                setMissing(true);
-              }}
-            />
-            <img
-              src={stageMeta.blinkImagePath}
-              alt=""
-              aria-hidden="true"
-              className={`floaty pointer-events-none absolute inset-0 mx-auto block h-auto w-full object-contain ${motionFrame === "blink" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
-            />
-            <img
-              src={stageMeta.waveImagePath}
-              alt=""
-              aria-hidden="true"
-              className={`floaty pointer-events-none absolute inset-0 mx-auto block h-auto w-full object-contain ${motionFrame === "wave" ? "opacity-100" : "opacity-0"} ${compact ? "max-h-[230px] pt-8" : "max-h-[360px] pt-8"}`}
-            />
+          <div className={`character-canvas-anchor ${compact ? "character-canvas-anchor-compact" : ""}`}>
+            <div className="character-canvas floaty">
+              <img
+                src={src}
+                alt={stageMeta.status}
+                className={`character-motion-frame ${motionFrame === "base" ? "opacity-100" : "opacity-0"}`}
+                onError={() => {
+                  if (src !== "/images/girl-normal-transparent.png") {
+                    setSrc("/images/girl-normal-transparent.png");
+                    return;
+                  }
+                  setMissing(true);
+                }}
+              />
+              <img
+                src={stageMeta.blinkImagePath}
+                alt=""
+                aria-hidden="true"
+                className={`character-motion-frame ${motionFrame === "blink" ? "opacity-100" : "opacity-0"}`}
+              />
+              <img
+                src={stageMeta.waveImagePath}
+                alt=""
+                aria-hidden="true"
+                className={`character-motion-frame ${motionFrame === "wave" ? "opacity-100" : "opacity-0"}`}
+              />
+              {outfitId !== "default" && outfit.previewPath ? (
+                <img
+                  src={outfit.previewPath}
+                  alt=""
+                  aria-hidden="true"
+                  className={`character-outfit character-outfit-${outfitId}`}
+                />
+              ) : null}
+            </div>
           </div>
         )}
-        {outfitId !== "default" ? <div className={`character-outfit character-outfit-${outfitId}`} aria-label={`当前穿着：${outfit.name}`} /> : null}
         <div className="absolute inset-x-4 bottom-4 z-10 rounded-[22px] border border-white/75 bg-white/72 px-3 py-2 text-xs font-semibold leading-snug text-[#6D5A8C] shadow-[0_10px_24px_rgba(76,53,117,0.1)] backdrop-blur-xl">
           {stageMeta.status}
         </div>

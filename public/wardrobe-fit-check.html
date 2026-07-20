@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服饰五阶段适配验收</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #f7f4fb; color: #4c3575; font-family: system-ui, sans-serif; }
+      main { width: min(1500px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 40px; }
+      h1, p { margin: 0; }
+      header { margin-bottom: 20px; }
+      header p { margin-top: 6px; color: #806a9f; }
+      .matrix { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+      .card { min-width: 0; border: 1px solid #e7d8ff; border-radius: 8px; background: #fff; padding: 10px; }
+      .meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12px; font-weight: 800; }
+      .avatar { position: relative; overflow: hidden; width: 100%; aspect-ratio: 2 / 3; border-radius: 6px; background: linear-gradient(135deg,#ddf8f5,#fff 48%,#f3e8ff); }
+      .body, .outfit { position: absolute; pointer-events: none; }
+      .body { inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+      .outfit {
+        z-index: 2;
+        left: 50%;
+        top: calc(var(--fit-top) + var(--stage-top));
+        width: var(--fit-width);
+        height: var(--fit-height);
+        object-fit: contain;
+        object-position: center top;
+        transform: translateX(-50%) scaleX(var(--stage-x)) scaleY(var(--stage-y));
+        transform-origin: center top;
+        filter: drop-shadow(0 2px 2px rgba(76,53,117,.12));
+      }
+      .portrait { --fit-top: 39%; --fit-width: 58%; --fit-height: 62%; }
+      .square { --fit-top: 42%; --fit-width: 54%; --fit-height: 56%; }
+      .hanfu-cloud { --fit-top: 39%; --fit-width: 60%; --fit-height: 59%; }
+      .ballet-pink, .summer-sundress { --fit-top: 40%; --fit-width: 55%; --fit-height: 58%; }
+      .techwear-black, .office-chic { --fit-top: 41%; --fit-width: 52%; --fit-height: 55%; }
+      .winter-coat { --fit-top: 38%; --fit-width: 61%; --fit-height: 63%; }
+      [data-stage="1"] { --stage-x: .84; --stage-y: .98; --stage-top: 1%; }
+      [data-stage="2"] { --stage-x: .92; --stage-y: .99; --stage-top: .5%; }
+      [data-stage="3"] { --stage-x: 1; --stage-y: 1; --stage-top: 0%; }
+      [data-stage="4"] { --stage-x: 1.08; --stage-y: 1.01; --stage-top: -.5%; }
+      [data-stage="5"] { --stage-x: 1.16; --stage-y: 1.02; --stage-top: -1%; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header><h1>服饰 × Body Score 五阶段</h1><p>10 套服饰，每套均验证 S1-S5 独立体型适配。</p></header>
+      <section class="matrix" id="matrix"></section>
+    </main>
+    <script>
+      const outfits = [
+        ["kpop-lilac","薰衣草舞台","portrait"],
+        ["hanfu-cloud","云纹汉服","square"],
+        ["denim-street","丹宁街头","portrait"],
+        ["ballet-pink","芭蕾粉雾","square"],
+        ["coquette-red","樱桃蝴蝶结","square"],
+        ["techwear-black","夜行机能","square"],
+        ["summer-sundress","夏日奶油花","square"],
+        ["office-chic","珍珠通勤","square"],
+        ["idol-silver","银曜偶像","square"],
+        ["winter-coat","冰蓝暖冬","portrait"]
+      ];
+      document.querySelector("#matrix").innerHTML = outfits.flatMap(([id,name,shape]) =>
+        [1,2,3,4,5].map(stage => `<article class="card"><div class="meta"><span>${name}</span><span>S${stage}</span></div><div class="avatar" data-stage="${stage}"><img class="body" src="images/girl-stage-${stage}-transparent.png" alt="" /><img class="outfit ${shape} ${id}" src="images/outfits/${id}.png" alt="" /></div></article>`)
+      ).join("");
+    </script>
+  </body>
+</html>

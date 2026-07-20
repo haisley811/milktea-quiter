@@ -89,6 +89,7 @@ assert.match(gitattributes, /^\.npmrc text eol=lf/m);
   "lib/uiPreferences.ts",
   "next.config.ts",
   "public/preview.html",
+  "public/wardrobe-fit-check.html",
   "scripts/check-github-ready.mjs",
   "scripts/check-goal-status.mjs",
   "scripts/check-launch-handoff.mjs",
@@ -1048,13 +1049,27 @@ assert.match(wardrobe, /availableCoins/);
 assert.match(file("components/WardrobeShop.tsx"), /用戒奶茶金币换新衣/);
 const characterDisplay = file("components/CharacterDisplay.tsx");
 assert.match(characterDisplay, /character-outfit/);
+assert.match(characterDisplay, /character-canvas-anchor/);
+assert.match(characterDisplay, /src=\{outfit\.previewPath\}/);
 assert.match(characterDisplay, /motionFrame === "blink" \? "opacity-100" : "opacity-0"/);
 assert.match(characterDisplay, /motionFrame === "wave" \? "opacity-100" : "opacity-0"/);
 assert.doesNotMatch(characterDisplay, /setSrc\(framePath\)/);
-assert.match(file("app/globals.css"), /\[data-character-stage="5"\] \.character-outfit/);
-assert.match(file("public/preview.html"), /KEY_WARDROBE/);
-assert.match(file("public/preview.html"), /WARDROBE_STORAGE_KEY|milkTeaWardrobe/);
-[
+assert.match(globals, /\.character-canvas-anchor/);
+assert.match(globals, /\.character-outfit \{/);
+assert.doesNotMatch(globals, /\.character-outfit::before/);
+for (const stage of [1, 2, 3, 4, 5]) {
+  assert.match(globals, new RegExp(`\\[data-character-stage="${stage}"\\] \\.character-outfit`));
+}
+assert.match(preview, /KEY_WARDROBE/);
+assert.match(preview, /WARDROBE_STORAGE_KEY|milkTeaWardrobe/);
+assert.match(preview, /character-canvas-anchor/);
+assert.match(preview, /equipped\.asset/);
+assert.match(preview, /<img class="character-outfit \$\{equipped\.id\}"/);
+assert.doesNotMatch(preview, /\.character-outfit::before/);
+const wardrobeFitCheck = file("public/wardrobe-fit-check.html");
+assert.match(wardrobeFitCheck, /10 套服饰/);
+assert.match(wardrobeFitCheck, /\[1,2,3,4,5\]\.map/);
+const wardrobeOutfits = [
   "kpop-lilac",
   "hanfu-cloud",
   "denim-street",
@@ -1065,7 +1080,11 @@ assert.match(file("public/preview.html"), /WARDROBE_STORAGE_KEY|milkTeaWardrobe/
   "office-chic",
   "idol-silver",
   "winter-coat"
-].forEach((outfit) => image(`public/images/outfits/${outfit}.png`));
+];
+wardrobeOutfits.forEach((outfit) => {
+  image(`public/images/outfits/${outfit}.png`);
+  assert.match(wardrobeFitCheck, new RegExp(outfit));
+});
 
 const launchAcceptance = file("docs/launch-acceptance-checklist.md");
 assert.match(launchAcceptance, /Netlify 公共链接/);

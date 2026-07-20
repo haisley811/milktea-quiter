@@ -134,74 +134,40 @@ button.submit-busy::before {
   animation: floaty 4.5s ease-in-out infinite;
 }
 
-/* The wardrobe is vector-like CSS so one outfit keeps its proportions across all five body-score silhouettes. */
+.character-canvas-anchor { position: absolute; left: 50%; bottom: 0; width: auto; height: 94%; aspect-ratio: 2 / 3; transform: translateX(-50%); }
+.character-canvas-anchor-compact { height: 100%; }
+.character-canvas { position: relative; width: 100%; height: 100%; }
+.character-motion-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; pointer-events: none; }
 .character-outfit {
-  --outfit: #bba7ef;
-  --outfit-dark: #7c5bd6;
-  --outfit-light: #f8f4ff;
-  --body-scale: 1;
+  --fit-top: 42%;
+  --fit-width: 54%;
+  --fit-height: 56%;
+  --stage-x: 1;
+  --stage-y: 1;
+  --stage-top: 0%;
   pointer-events: none;
   position: absolute;
   z-index: 5;
   left: 50%;
-  top: 56%;
-  width: 29%;
-  height: 32%;
-  transform: translateX(-50%) scaleX(var(--body-scale));
+  top: calc(var(--fit-top) + var(--stage-top));
+  width: var(--fit-width);
+  height: var(--fit-height);
+  object-fit: contain;
+  object-position: center top;
+  transform: translateX(-50%) scaleX(var(--stage-x)) scaleY(var(--stage-y));
   transform-origin: center top;
-  filter: drop-shadow(0 3px 2px rgba(76, 53, 117, 0.18));
+  filter: drop-shadow(0 2px 2px rgba(76, 53, 117, 0.12));
 }
-
-.character-outfit::before,
-.character-outfit::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.character-outfit::before {
-  top: 0;
-  width: 100%;
-  height: 45%;
-  border: 2px solid color-mix(in srgb, var(--outfit-dark) 64%, #3f3156);
-  border-radius: 28% 28% 18% 18%;
-  background:
-    linear-gradient(90deg, transparent 46%, var(--outfit-light) 46% 54%, transparent 54%),
-    linear-gradient(180deg, var(--outfit-light) 0 18%, var(--outfit) 19% 100%);
-}
-
-.character-outfit::after {
-  top: 39%;
-  width: 92%;
-  height: 47%;
-  border: 2px solid color-mix(in srgb, var(--outfit-dark) 64%, #3f3156);
-  border-radius: 12% 12% 42% 42%;
-  background: repeating-linear-gradient(90deg, var(--outfit) 0 16%, var(--outfit-light) 17% 20%, var(--outfit) 21% 34%);
-}
-
-.character-outfit-kpop-lilac { --outfit: #c4b5fd; --outfit-dark: #8b5cf6; --outfit-light: #f5f3ff; }
-.character-outfit-hanfu-cloud { --outfit: #a7f3d0; --outfit-dark: #3f8f86; --outfit-light: #fffbeb; top: 55%; height: 36%; }
-.character-outfit-hanfu-cloud::before { border-radius: 20% 20% 10% 10%; }
-.character-outfit-hanfu-cloud::after { height: 61%; border-radius: 8% 8% 48% 48%; background: linear-gradient(180deg, #d1fae5, #fffbeb); }
-.character-outfit-denim-street { --outfit: #93c5fd; --outfit-dark: #3b82f6; --outfit-light: #1f2937; }
-.character-outfit-ballet-pink { --outfit: #f9a8d4; --outfit-dark: #db2777; --outfit-light: #fff1f2; }
-.character-outfit-ballet-pink::after { height: 54%; border-radius: 42% 42% 48% 48%; }
-.character-outfit-coquette-red { --outfit: #fb7185; --outfit-dark: #be123c; --outfit-light: #fff1f2; }
-.character-outfit-techwear-black { --outfit: #374151; --outfit-dark: #111827; --outfit-light: #a78bfa; }
-.character-outfit-summer-sundress { --outfit: #fde68a; --outfit-dark: #d97706; --outfit-light: #fff7ed; }
-.character-outfit-summer-sundress::after { height: 61%; border-radius: 10% 10% 48% 48%; background: radial-gradient(circle at 20% 30%, #f9a8d4 0 5%, transparent 6%), radial-gradient(circle at 75% 52%, #f9a8d4 0 5%, transparent 6%), #fde68a; }
-.character-outfit-office-chic { --outfit: #e5e7eb; --outfit-dark: #374151; --outfit-light: #ffffff; }
-.character-outfit-idol-silver { --outfit: #c4b5fd; --outfit-dark: #6d28d9; --outfit-light: #e0f2fe; }
-.character-outfit-winter-coat { --outfit: #93c5fd; --outfit-dark: #2563eb; --outfit-light: #f8fafc; top: 54%; height: 36%; }
-.character-outfit-winter-coat::before { height: 57%; border-radius: 22% 22% 14% 14%; }
-.character-outfit-winter-coat::after { top: 49%; height: 28%; border-radius: 16%; background: #f8fafc; }
-
-[data-character-stage="1"] .character-outfit { --body-scale: 0.87; }
-[data-character-stage="2"] .character-outfit { --body-scale: 0.93; }
-[data-character-stage="3"] .character-outfit { --body-scale: 1; }
-[data-character-stage="4"] .character-outfit { --body-scale: 1.07; }
-[data-character-stage="5"] .character-outfit { --body-scale: 1.15; }
+.character-outfit-kpop-lilac, .character-outfit-denim-street { --fit-top: 39%; --fit-width: 58%; --fit-height: 62%; }
+.character-outfit-hanfu-cloud { --fit-top: 39%; --fit-width: 60%; --fit-height: 59%; }
+.character-outfit-ballet-pink, .character-outfit-summer-sundress { --fit-top: 40%; --fit-width: 55%; --fit-height: 58%; }
+.character-outfit-techwear-black, .character-outfit-office-chic { --fit-top: 41%; --fit-width: 52%; --fit-height: 55%; }
+.character-outfit-winter-coat { --fit-top: 38%; --fit-width: 61%; --fit-height: 63%; }
+[data-character-stage="1"] .character-outfit { --stage-x: 0.84; --stage-y: 0.98; --stage-top: 1%; }
+[data-character-stage="2"] .character-outfit { --stage-x: 0.92; --stage-y: 0.99; --stage-top: 0.5%; }
+[data-character-stage="3"] .character-outfit { --stage-x: 1; --stage-y: 1; --stage-top: 0%; }
+[data-character-stage="4"] .character-outfit { --stage-x: 1.08; --stage-y: 1.01; --stage-top: -0.5%; }
+[data-character-stage="5"] .character-outfit { --stage-x: 1.16; --stage-y: 1.02; --stage-top: -1%; }
 
 .wardrobe-card { background: rgba(255, 255, 255, 0.58); box-shadow: 0 10px 24px rgba(76, 53, 117, 0.08); }
 .wardrobe-preview { border: 1px solid rgba(255,255,255,0.88); }
