@@ -1,4 +1,3 @@
-import { StatCard } from "@/components/StatCard";
 import { ThemeControls } from "@/components/ThemeControls";
 import { WardrobeShop } from "@/components/WardrobeShop";
 import type { AppStats } from "@/lib/types";
@@ -47,13 +46,6 @@ export function ProfileView({
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-3">
-        <StatCard label="登录状态" value="未登录" tone="purple" />
-        <StatCard label="同步方式" value="本地" tone="mint" />
-        <StatCard label="本机记录" value={`${stats.records.length}`} tone="pink" />
-        <StatCard label="存储 Key" value="milkTeaAppData" tone="amber" />
-      </div>
-
       <ThemeControls
         activeTheme={activeTheme}
         showCharacter={showCharacter}
@@ -63,19 +55,6 @@ export function ProfileView({
 
       <WardrobeShop stats={stats} wardrobe={wardrobe} onPurchase={onPurchaseOutfit} onEquip={onEquipOutfit} />
 
-      <section className="glass-card rounded-[30px] p-5">
-        <h2 className="text-lg font-black text-[#4C3575]">后续账号数据</h2>
-        <div className="mt-4 space-y-3 text-sm font-semibold text-[#6D5A8C]">
-          <div className="rounded-[22px] bg-white/65 p-4">
-            <p className="font-black text-[#4C3575]">微信小程序</p>
-            <p className="mt-1 text-xs leading-relaxed text-[#8A74AA]">可接入 openid、云数据库、跨设备同步和订阅提醒。</p>
-          </div>
-          <div className="rounded-[22px] bg-white/65 p-4">
-            <p className="font-black text-[#4C3575]">iOS 应用</p>
-            <p className="mt-1 text-xs leading-relaxed text-[#8A74AA]">可接入 UserDefaults、iCloud、健康提醒和桌面小组件。</p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

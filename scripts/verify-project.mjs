@@ -256,11 +256,12 @@ assert.match(dataView, /BodyScoreMeter/);
 const profileView = file("components/views/ProfileView.tsx");
 assert.match(profileView, /个人账号与同步/);
 assert.match(profileView, /本地体验账号/);
-assert.match(profileView, /微信小程序/);
 assert.match(profileView, /ThemeControls/);
 assert.match(profileView, /activeTheme/);
 assert.match(profileView, /onShowCharacterChange/);
 assert.doesNotMatch(profileView, /清空所有记录/);
+assert.doesNotMatch(profileView, /登录状态|同步方式|本机记录|存储 Key/);
+assert.doesNotMatch(profileView, /后续账号数据|可接入 openid|可接入 UserDefaults/);
 
 const historyList = file("components/HistoryList.tsx");
 assert.match(historyList, /onDeleteRecord/);
@@ -301,6 +302,8 @@ assert.match(modeCard, /已选/);
 
 const preview = file("public/preview.html");
 const netlifyConfig = file("netlify.toml");
+assert.match(preview, /<div id="profile-stats" hidden><\/div>/);
+assert.doesNotMatch(preview, /<h2 style="font-size:20px">后续账号数据<\/h2>/);
 assert.match(netlifyConfig, /from\s*=\s*["']\/["']/);
 assert.match(netlifyConfig, /to\s*=\s*["']\/preview\.html["']/);
 assert.match(netlifyConfig, /status\s*=\s*200/);
