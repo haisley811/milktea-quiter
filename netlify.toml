@@ -8,6 +8,12 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+[[redirects]]
+  from = "/"
+  to = "/preview.html"
+  status = 200
+  force = true
+
 [[headers]]
   for = "/api/*"
   [headers.values]

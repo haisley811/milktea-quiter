@@ -300,9 +300,11 @@ assert.match(modeCard, /selected-pop/);
 assert.match(modeCard, /已选/);
 
 const preview = file("public/preview.html");
-const nextConfig = file("next.config.ts");
-assert.match(nextConfig, /source:\s*["']\/["']/);
-assert.match(nextConfig, /destination:\s*["']\/preview\.html["']/);
+const netlifyConfig = file("netlify.toml");
+assert.match(netlifyConfig, /from\s*=\s*["']\/["']/);
+assert.match(netlifyConfig, /to\s*=\s*["']\/preview\.html["']/);
+assert.match(netlifyConfig, /status\s*=\s*200/);
+assert.match(netlifyConfig, /force\s*=\s*true/);
 assert.match(preview, /\.view \{ display: none/);
 assert.match(preview, /\.view\.active \{ display: grid/);
 assert.match(preview, /\.stack \{ gap: 18px/);
