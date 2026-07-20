@@ -1,0 +1,36 @@
+name: Verify
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      MILKTEA_AI_ENABLED: "false"
+      QWEN_API_BASE_URL: "https://maas-api.cn-huabei-1.xf-yun.com/v2"
+      QWEN_MODEL: "xopqwen36v35b"
+      QWEN_API_KEY: ""
+      QWEN_API_TIMEOUT_MS: "12000"
+      MILKTEA_ALLOWED_ORIGINS: "*"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify project
+        run: npm run verify
+
+      - name: Build Next.js
+        run: npm run build

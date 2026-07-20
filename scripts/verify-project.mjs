@@ -879,7 +879,7 @@ assert.doesNotMatch(githubUploadManual, /5905235/);
 
 const netlifyDeployManual = file("docs/netlify-deploy-manual.md");
 assert.match(netlifyDeployManual, /Netlify 部署专项手册/);
-assert.match(netlifyDeployManual, /Build command: npm run verify && npm run build/);
+assert.match(netlifyDeployManual, /Build command: npm run build/);
 assert.match(netlifyDeployManual, /Publish directory: \.next/);
 assert.match(netlifyDeployManual, /NODE_VERSION = "22"/);
 assert.match(netlifyDeployManual, /docs\/netlify-env-copy-paste\.md/);
@@ -903,7 +903,7 @@ assert.match(prepReport, /verify:api-live/);
 assert.match(prepReport, /QWEN API 请求超时/);
 assert.match(prepReport, /verify:public-api/);
 assert.match(prepReport, /npm run build/);
-assert.match(prepReport, /npm run verify && npm run build/);
+assert.match(prepReport, /npm run build/);
 assert.match(prepReport, /node_modules/);
 assert.match(prepReport, /milkTeaUiPreferences/);
 assert.match(prepReport, /npm install --package-lock-only/);

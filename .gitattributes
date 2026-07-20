@@ -1,0 +1,30 @@
+* text=auto
+
+*.env text eol=lf
+.env.example text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitkeep text eol=lf
+.npmrc text eol=lf
+.nvmrc text eol=lf
+
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.css text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.mjs text eol=lf
+*.mts text eol=lf
+*.py text eol=lf
+*.toml text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.yml text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary

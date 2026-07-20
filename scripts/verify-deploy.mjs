@@ -43,7 +43,7 @@ assert.match(gitattributes, /^\*\.md text eol=lf/m);
 assert.match(gitattributes, /^\.npmrc text eol=lf/m);
 
 const netlify = file("netlify.toml");
-assert.match(netlify, /command = "npm run verify && npm run build"/);
+assert.match(netlify, /command = "npm run build"/);
 assert.match(netlify, /publish = "\.next"/);
 assert.match(netlify, /NODE_VERSION = "22"/);
 assert.match(netlify, /for = "\/api\/\*"/);
@@ -80,7 +80,7 @@ assert.match(qwenRuntime, /slice\(0, maxItems\)/);
 
 const workflow = file(".github/workflows/verify.yml");
 assert.match(workflow, /node-version: 22/);
-assert.match(workflow, /npm install/);
+assert.match(workflow, /npm (?:ci|install)/);
 assert.match(workflow, /npm run verify/);
 assert.match(workflow, /npm run build/);
 
