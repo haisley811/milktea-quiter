@@ -16,8 +16,10 @@ type MotionFrame = "base" | "blink" | "wave";
 export function CharacterDisplay({ bodyScore, compact = false, withBubble = false, outfitId = "default" }: CharacterDisplayProps) {
   const stageMeta = getCharacterStageMeta(bodyScore);
   const outfit = findOutfit(outfitId);
+  const dressedPath = outfitId === "default" ? null : `/images/dressed/${outfitId}-stage-${stageMeta.stage}.png`;
+  const characterPath = dressedPath ?? stageMeta.imagePath;
   const [motionFrame, setMotionFrame] = useState<MotionFrame>("base");
-  const [src, setSrc] = useState(stageMeta.imagePath);
+  const [src, setSrc] = useState(characterPath);
   const [missing, setMissing] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -31,12 +33,12 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
 
   useEffect(() => {
     setMotionFrame("base");
-    setSrc(stageMeta.imagePath);
+    setSrc(characterPath);
     setMissing(false);
-  }, [stageMeta.imagePath]);
+  }, [characterPath]);
 
   useEffect(() => {
-    if (reduceMotion || missing) return;
+    if (reduceMotion || missing || dressedPath) return;
 
     const waveTimer = window.setTimeout(() => setMotionFrame("wave"), 140);
     const baseAfterWave = window.setTimeout(() => setMotionFrame("base"), 780);
@@ -50,7 +52,7 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
       window.clearTimeout(baseAfterWave);
       window.clearInterval(blinkLoop);
     };
-  }, [missing, reduceMotion, stageMeta.stage]);
+  }, [dressedPath, missing, reduceMotion, stageMeta.stage]);
 
   return (
     <div className="relative">
@@ -79,9 +81,13 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
             <div className="character-canvas floaty">
               <img
                 src={src}
-                alt={stageMeta.status}
+                alt={outfitId === "default" ? stageMeta.status : `${stageMeta.status}，穿着${outfit.name}`}
                 className={`character-motion-frame ${motionFrame === "base" ? "opacity-100" : "opacity-0"}`}
                 onError={() => {
+                  if (dressedPath && src === dressedPath) {
+                    setSrc(stageMeta.imagePath);
+                    return;
+                  }
                   if (src !== "/images/girl-normal-transparent.png") {
                     setSrc("/images/girl-normal-transparent.png");
                     return;
@@ -89,25 +95,21 @@ export function CharacterDisplay({ bodyScore, compact = false, withBubble = fals
                   setMissing(true);
                 }}
               />
-              <img
-                src={stageMeta.blinkImagePath}
-                alt=""
-                aria-hidden="true"
-                className={`character-motion-frame ${motionFrame === "blink" ? "opacity-100" : "opacity-0"}`}
-              />
-              <img
-                src={stageMeta.waveImagePath}
-                alt=""
-                aria-hidden="true"
-                className={`character-motion-frame ${motionFrame === "wave" ? "opacity-100" : "opacity-0"}`}
-              />
-              {outfitId !== "default" && outfit.previewPath ? (
-                <img
-                  src={outfit.previewPath}
-                  alt=""
-                  aria-hidden="true"
-                  className={`character-outfit character-outfit-${outfitId}`}
-                />
+              {outfitId === "default" ? (
+                <>
+                  <img
+                    src={stageMeta.blinkImagePath}
+                    alt=""
+                    aria-hidden="true"
+                    className={`character-motion-frame ${motionFrame === "blink" ? "opacity-100" : "opacity-0"}`}
+                  />
+                  <img
+                    src={stageMeta.waveImagePath}
+                    alt=""
+                    aria-hidden="true"
+                    className={`character-motion-frame ${motionFrame === "wave" ? "opacity-100" : "opacity-0"}`}
+                  />
+                </>
               ) : null}
             </div>
           </div>

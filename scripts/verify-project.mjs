@@ -1048,27 +1048,30 @@ assert.match(wardrobe, /purchaseOutfit/);
 assert.match(wardrobe, /availableCoins/);
 assert.match(file("components/WardrobeShop.tsx"), /用戒奶茶金币换新衣/);
 const characterDisplay = file("components/CharacterDisplay.tsx");
-assert.match(characterDisplay, /character-outfit/);
 assert.match(characterDisplay, /character-canvas-anchor/);
-assert.match(characterDisplay, /src=\{outfit\.previewPath\}/);
+assert.match(characterDisplay, /images\/dressed\/\$\{outfitId\}-stage-\$\{stageMeta\.stage\}\.png/);
+assert.match(characterDisplay, /dressedPath \?\? stageMeta\.imagePath/);
+assert.match(characterDisplay, /if \(reduceMotion \|\| missing \|\| dressedPath\) return/);
 assert.match(characterDisplay, /motionFrame === "blink" \? "opacity-100" : "opacity-0"/);
 assert.match(characterDisplay, /motionFrame === "wave" \? "opacity-100" : "opacity-0"/);
 assert.doesNotMatch(characterDisplay, /setSrc\(framePath\)/);
+assert.doesNotMatch(characterDisplay, /character-outfit/);
+assert.doesNotMatch(characterDisplay, /outfit\.previewPath/);
 assert.match(globals, /\.character-canvas-anchor/);
-assert.match(globals, /\.character-outfit \{/);
-assert.doesNotMatch(globals, /\.character-outfit::before/);
-for (const stage of [1, 2, 3, 4, 5]) {
-  assert.match(globals, new RegExp(`\\[data-character-stage="${stage}"\\] \\.character-outfit`));
-}
+assert.doesNotMatch(globals, /\.character-outfit/);
 assert.match(preview, /KEY_WARDROBE/);
 assert.match(preview, /WARDROBE_STORAGE_KEY|milkTeaWardrobe/);
 assert.match(preview, /character-canvas-anchor/);
-assert.match(preview, /equipped\.asset/);
-assert.match(preview, /<img class="character-outfit \$\{equipped\.id\}"/);
-assert.doesNotMatch(preview, /\.character-outfit::before/);
+assert.match(preview, /images\/dressed\/\$\{equipped\.id\}-stage-\$\{currentStage\}\.png/);
+assert.match(preview, /data-static="true"/);
+assert.match(preview, /character\.dataset\.static==="true"/);
+assert.doesNotMatch(preview, /character-outfit/);
 const wardrobeFitCheck = file("public/wardrobe-fit-check.html");
 assert.match(wardrobeFitCheck, /10 套服饰/);
+assert.match(wardrobeFitCheck, /50 张独立完整角色 PNG/);
+assert.match(wardrobeFitCheck, /不使用服饰覆盖图层/);
 assert.match(wardrobeFitCheck, /\[1,2,3,4,5\]\.map/);
+assert.match(wardrobeFitCheck, /images\/dressed\/\$\{id\}-stage-\$\{stage\}\.png/);
 const wardrobeOutfits = [
   "kpop-lilac",
   "hanfu-cloud",
@@ -1084,6 +1087,9 @@ const wardrobeOutfits = [
 wardrobeOutfits.forEach((outfit) => {
   image(`public/images/outfits/${outfit}.png`);
   assert.match(wardrobeFitCheck, new RegExp(outfit));
+  for (const stage of [1, 2, 3, 4, 5]) {
+    image(`public/images/dressed/${outfit}-stage-${stage}.png`);
+  }
 });
 
 const launchAcceptance = file("docs/launch-acceptance-checklist.md");
